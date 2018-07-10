@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+{% block title %}Exercise | Home{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            {% for task in var %}
+            <h1>{{task.name}}</h1>
+            {% endfor%}
+            
+            <br>
+        </div>
+    </div>
+</div>
+    
+        
+
+
+
+
+{% endblock %}
