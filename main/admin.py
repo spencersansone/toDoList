@@ -1,22 +1,24 @@
 from django.contrib import admin
 from .models import *
 
+
+
 class TaskList(admin.ModelAdmin):
     list_display = ('name',)
     ordering = ['name']
 
 admin.site.register(Task, TaskList)
 
-class TaskStatusList(admin.ModelAdmin):
-    list_display = ('task',)
-    ordering = ['id','task']
+class StepList(admin.ModelAdmin):
+    list_display = ('name','task',)
+    ordering = ['name']
 
-admin.site.register(TaskStatus, TaskStatusList)
+admin.site.register(Step, StepList)
 
-class TaskStepStatusList(admin.ModelAdmin):
-    list_display = ('task_status','step_number','done',)
-    ordering = ['task_status','step_number']
+# class TaskStepStatusList(admin.ModelAdmin):
+#     list_display = ('task_status','step_number','done',)
+#     ordering = ['task_status','step_number']
     
-admin.site.register(TaskStepStatus, TaskStepStatusList)
+# admin.site.register(TaskStepStatus, TaskStepStatusList)
 
 # Register your models here.

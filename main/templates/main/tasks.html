@@ -5,9 +5,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
-            
-            <h1>{{task.name}}</h1>
-            
+            {% for task in task_list %}
+            <h1>{{task}}</h1>
+            {% endfor %}
             
             <br>
         </div>
