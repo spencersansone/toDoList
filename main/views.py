@@ -11,19 +11,11 @@ def tasks(request):
     x = {}
     x['task_list'] = Task.objects.all()
     return render(request, 'main/tasks.html', x)
-    
-# def today(request):
-#     weekday = datetime.date.today().strftime("%A")
-#     allTasks = 0
-#     x = {}
-#     x['weekday'] = weekday
-#     x['steps'] = steps
-    
-    
-#     return render(request, 'main/today.html', x)
 
-# class taskDetail(generic.DetailView):
-#     # model = Task
-#     template_name = 'main/taskDetail.html'
+def task_detail(request, pk):
+    certain_task = Task.objects.get(id=pk)
+    x = {}
+    x['certain_task'] = certain_task
+    return render(request, 'main/task_detail.html', x)
 
 # Create your views here.
