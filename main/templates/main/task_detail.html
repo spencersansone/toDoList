@@ -6,6 +6,9 @@
     <div class="row">
         <div class="col-sm-12">
             <h1>{{certain_task}}</h1>
+            {% for step in certain_task_steps %}
+            <h4>{{step.name}}</h4>
+            {% endfor %}
             <br>
         </div>
     </div>
