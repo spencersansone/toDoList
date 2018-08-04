@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import generic
 from .models import *
 import datetime
@@ -19,5 +19,15 @@ def task_detail(request, pk):
     x['certain_task'] = certain_task
     x['certain_task_steps'] = certain_task_steps
     return render(request, 'main/task_detail.html', x)
+    
+def add_task(request):
+    x = {}
+    if request.method == "POST":
+        n = request.POST.get('name')
+        
+        Task.objects.create(name = n)
+        return redirect('main:task_list')
+    else:
+        return render(request, 'main/add_task.html', x)
 
 # Create your views here.
