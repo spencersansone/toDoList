@@ -15,15 +15,19 @@ def task_list(request):
 
 def task_detail(request, pk):
     x = {}
-    x['certain_task'] = Task.objects.get(id=pk)
+    certain_task = Task.objects.get(id=pk)
+    x['certain_task'] = certain_task
     x['certain_task_steps'] = Step.objects.filter(task=certain_task)
     return render(request, 'main/task_detail.html', x)
     
 def add_task(request):
     if request.method == "POST":
-        Task.objects.create(
+        created_task = Task.objects.create(
             name = request.POST.get('name'))
-        return redirect('main:task_list')
+        # return redirect('main:task_list')
+        x = {}
+        x['pk'] = created_task.pk
+        return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
     else:
         return render(request, 'main/add_task.html')
         

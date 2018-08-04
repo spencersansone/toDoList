@@ -9,7 +9,7 @@
             <br>
             <h2>Steps:</h2>
             {% for step in certain_task_steps %}
-            <h4>{{step.step_number}} {{step.name}}</h4>
+            <h4>&emsp;{{step.step_number}}. {{step.name}}</h4>
             {% endfor %}
             <h4><a href="{% url 'main:add_step' pk=certain_task.pk %}">Add Step</a></h4>
             <br>
