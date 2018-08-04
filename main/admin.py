@@ -1,8 +1,6 @@
 from django.contrib import admin
 from .models import *
 
-
-
 class TaskList(admin.ModelAdmin):
     list_display = ('name',)
     ordering = ['name']
@@ -26,11 +24,3 @@ class StepEntryList(admin.ModelAdmin):
     ordering = []
 
 admin.site.register(StepEntry, StepEntryList)
-
-# class TaskStepStatusList(admin.ModelAdmin):
-#     list_display = ('task_status','step_number','done',)
-#     ordering = ['task_status','step_number']
-    
-# admin.site.register(TaskStepStatus, TaskStepStatusList)
-
-# Register your models here.

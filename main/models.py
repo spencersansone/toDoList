@@ -9,6 +9,7 @@ class Task(models.Model):
 class Step(models.Model):
     name = models.CharField(max_length=100)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    step_number = models.IntegerField()
 
 
 class TaskEntry(models.Model):
