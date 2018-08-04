@@ -5,9 +5,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
-            {% for task in var %}
-            <h1>{{task.name}}</h1>
-            {% endfor%}
+            <h1><a href="{% url 'main:task_list' %}">Tasks</a></h1>
             
             <br>
         </div>

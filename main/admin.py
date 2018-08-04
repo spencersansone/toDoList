@@ -15,6 +15,18 @@ class StepList(admin.ModelAdmin):
 
 admin.site.register(Step, StepList)
 
+class TaskEntryList(admin.ModelAdmin):
+    list_display = ('task',)
+    ordering = []
+
+admin.site.register(TaskEntry, TaskEntryList)
+
+class StepEntryList(admin.ModelAdmin):
+    list_display = ('step',)
+    ordering = []
+
+admin.site.register(StepEntry, StepEntryList)
+
 # class TaskStepStatusList(admin.ModelAdmin):
 #     list_display = ('task_status','step_number','done',)
 #     ordering = ['task_status','step_number']

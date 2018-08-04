@@ -5,12 +5,11 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
-            <h1>Task: {{certain_task}}</h1>
-            <br>
-            <h2>Steps:</h2>
-            {% for step in certain_task_steps %}
-            <h4>{{step.name}}</h4>
+            {% for task in task_list %}
+            <h1><a href="{% url 'main:task_detail' pk=task.pk %}">{{task}}</a></h1>
             {% endfor %}
+            
+            
             <br>
         </div>
     </div>

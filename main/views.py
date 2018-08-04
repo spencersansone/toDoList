@@ -7,10 +7,10 @@ def home(request):
     x = {}
     return render(request, 'main/home.html', x)
     
-def tasks(request):
+def task_list(request):
     x = {}
-    x['task_list'] = Task.objects.all()
-    return render(request, 'main/tasks.html', x)
+    x['tasks'] = Task.objects.all()
+    return render(request, 'main/task_list.html', x)
 
 def task_detail(request, pk):
     certain_task = Task.objects.get(id=pk)
