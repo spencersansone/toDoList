@@ -3,6 +3,14 @@ from django.db import models
 class Task(models.Model):
     name = models.CharField(max_length=100)
     
+    sunday = models.BooleanField()
+    monday = models.BooleanField()
+    tuesday = models.BooleanField()
+    wednesday = models.BooleanField()
+    thursday = models.BooleanField()
+    friday = models.BooleanField()
+    saturday = models.BooleanField()
+    
     def __str__(self):
         return self.name
         

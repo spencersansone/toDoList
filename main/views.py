@@ -22,9 +22,25 @@ def task_detail(request, pk):
     
 def add_task(request):
     if request.method == "POST":
+        n = request.POST.get('name')
+        sun = True if request.POST.get('sunday') == "on" else False
+        mon = True if request.POST.get('monday') == "on" else False
+        tue = True if request.POST.get('tuesday') == "on" else False
+        wed = True if request.POST.get('wednesday') == "on" else False
+        thu = True if request.POST.get('thursday') == "on" else False
+        fri = True if request.POST.get('friday') == "on" else False
+        sat = True if request.POST.get('saturday') == "on" else False
+        
         created_task = Task.objects.create(
-            name = request.POST.get('name'))
-        # return redirect('main:task_list')
+            name = n,
+            sunday = sun,
+            monday = mon,
+            tuesday = tue,
+            wednesday = wed,
+            thursday = thu,
+            friday = fri,
+            saturday = sat)
+        
         x = {}
         x['pk'] = created_task.pk
         return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
