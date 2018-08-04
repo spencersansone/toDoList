@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+{% block title %}Exercise | Home{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <form role="form" action="{% url 'main:delete_task' pk=certain_pk %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h1>Delete {{certain_task.name}}?</h1>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Yes</button>
+                    <button type="button" class="btn btn-primary" onclick="window.history.go(-1)">No</button>
+                </div>
+        </form>
+            
+            
+            <br>
+        </div>
+    </div>
+</div>
+    
+        
+
+
+
+
+{% endblock %}

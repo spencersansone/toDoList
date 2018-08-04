@@ -7,7 +7,10 @@
         <div class="col-sm-12">
             <h1 style="font-weight:bold;">Tasks</h1>
             {% for task in tasks %}
-            <h4><a href="{% url 'main:task_detail' pk=task.pk %}">{{task}}</a></h4>
+            <h4>
+                <a href="{% url 'main:task_detail' pk=task.pk %}">{{task}}</a>
+                <a href="{% url 'main:delete_task' pk=task.pk %}">Delete</a>
+            </h4>
             {% endfor %}
             
             <br>
