@@ -1,12 +1,40 @@
 from django.shortcuts import render, redirect
 from django.views import generic
 from .models import *
+# from .forms import *
 import datetime
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
+from datetime import datetime, timedelta
+
+weekday_array = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"]
 
 def home(request):
     return render(request, 'main/home.html')
+
+def today(request):
+    today = datetime.now().date()
+    today_weekday = weekday_array[today.weekday()]
+    filter_dict = {today_weekday: True}
+    
+    today_tasks = Task.objects.filter(**filter_dict)
+    print(today_tasks)
+    
+
+        
+    
+    
+    x = {}
+    x['today_tasks'] = today_tasks
+    x['today_task_entries'] = TaskEntry.objects.filter(datetime_created=datetime.today())
+    return render(request, 'main/today.html', x)
     
 def task_list(request):
     x = {}
@@ -22,29 +50,56 @@ def task_detail(request, pk):
     
 def add_task(request):
     if request.method == "POST":
+        
+        routine_option = True if request.POST.get('routine_option') == "on" else False
+        certain_due_date_option = True if request.POST.get('certain_due_date_option') == "on" else False
+        
         n = request.POST.get('name')
-        sun = True if request.POST.get('sunday') == "on" else False
-        mon = True if request.POST.get('monday') == "on" else False
-        tue = True if request.POST.get('tuesday') == "on" else False
-        wed = True if request.POST.get('wednesday') == "on" else False
-        thu = True if request.POST.get('thursday') == "on" else False
-        fri = True if request.POST.get('friday') == "on" else False
-        sat = True if request.POST.get('saturday') == "on" else False
+        
+
+        
+        if routine_option:
+            sun = True if request.POST.get('sunday') == "on" else False
+            mon = True if request.POST.get('monday') == "on" else False
+            tue = True if request.POST.get('tuesday') == "on" else False
+            wed = True if request.POST.get('wednesday') == "on" else False
+            thu = True if request.POST.get('thursday') == "on" else False
+            fri = True if request.POST.get('friday') == "on" else False
+            sat = True if request.POST.get('saturday') == "on" else False
+        else:
+            sun = False
+            mon = False
+            tue = False
+            wed = False
+            thu = False
+            fri = False
+            sat = False
+        
+        if certain_due_date_option:
+            certain_date = request.POST.get('certain_date')
+        else:
+            certain_date = None
+
         
         created_task = Task.objects.create(
             name = n,
+            routine_task = routine_option,
             sunday = sun,
             monday = mon,
             tuesday = tue,
             wednesday = wed,
             thursday = thu,
             friday = fri,
-            saturday = sat)
+            saturday = sat,
+            certain_due_date_task = certain_due_date_option,
+            date = certain_date)
         
         x = {}
         x['pk'] = created_task.pk
         return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
     else:
+        x={}
+        # x['form'] = AddTaskForm()
         return render(request, 'main/add_task.html')
         
 def add_step(request, pk):
