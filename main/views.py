@@ -23,7 +23,6 @@ def home(request):
 def today(request):
     if request.method == "POST":
         if "step_entry_toggle_completed" in request.POST:
-            print("YESS")
             pk = request.POST.get("step_entry_toggle_completed")
             step_entry = StepEntry.objects.get(id=pk)
             step_entry.completed = not step_entry.completed
