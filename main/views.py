@@ -168,6 +168,7 @@ def add_task(request):
             thu = True if request.POST.get('thursday') == "on" else False
             fri = True if request.POST.get('friday') == "on" else False
             sat = True if request.POST.get('saturday') == "on" else False
+            certain_date = None
         else:
             sun = False
             mon = False
@@ -176,11 +177,7 @@ def add_task(request):
             thu = False
             fri = False
             sat = False
-        
-        if certain_due_date_option:
             certain_date = request.POST.get('certain_date')
-        else:
-            certain_date = None
 
         created_task = Task.objects.create(
             name = n,
