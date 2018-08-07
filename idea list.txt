@@ -1,10 +1,9 @@
 
-correct titles of pages DONE!
 
-make home page buttons DONE!
+add edit task  [INCOMPLETE]
 
-============================
+==============
 
-improve add_task to use accordions [INCOMPLETE]
+add buttons to task list [INCOMPLETE]
 
-===============
+add split up buttons to task list for delete and edit [INCOMPLETE]

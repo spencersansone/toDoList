@@ -112,7 +112,6 @@ def task_detail(request, pk):
 @cache_control(must_revalidate=True, max_age=3600)
 def add_task(request):
     if request.method == "POST":
-        
         routine_option = True if request.POST.get('routine_option') == "on" else False
         certain_due_date_option = True if request.POST.get('certain_due_date_option') == "on" else False
         
