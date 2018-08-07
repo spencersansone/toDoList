@@ -1,6 +1,0 @@
-
-add buttons to task list [INCOMPLETE]
-
-task list rename
-
-add split up buttons to task list for delete and edit [INCOMPLETE]>
