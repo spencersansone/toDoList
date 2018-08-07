@@ -7,7 +7,8 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
             <li class="breadcrumb-item"><a href="{% url 'main:task_list' %}">Tasks</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Delete {{certain_task.name}}</li>
+            <li class="breadcrumb-item"><a href="{% url 'main:task_detail' pk=certain_task.id %}">{{certain_task.name}}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Delete {{certain_task_step.name}}</li>
         </ol>
     </nav>    
 </div>
