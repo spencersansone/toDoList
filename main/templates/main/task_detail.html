@@ -2,22 +2,29 @@
 {% block title %}Exercise | Home{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <h1>Task: {{certain_task}}</h1>
-            <br>
-            {% if certain_task_steps|length == 0 %}
-            <h2>No Steps</h2>
-            {% else %}
-            <h2>Steps:</h2>
-                {% for step in certain_task_steps %}
-                <h4>&emsp;{{step.step_number}}. {{step.name}}</h4>
-                {% endfor %}
-            {% endif %}
-            <h4><a href="{% url 'main:add_step' pk=certain_task.pk %}">Add Step</a></h4>
-            <br>
-        </div>
-    </div>
+<div class="col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'main:task_list' %}">Tasks</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{certain_task.name}}</li>
+        </ol>
+    </nav>    
 </div>
+
+<div class="col-sm-12">
+    <h1>Task: {{certain_task}}</h1>
+    <br>
+    {% if certain_task_steps|length == 0 %}
+    <h2>No Steps</h2>
+    {% else %}
+    <h2>Steps:</h2>
+        {% for step in certain_task_steps %}
+        <h4>&emsp;{{step.step_number}}. {{step.name}}</h4>
+        {% endfor %}
+    {% endif %}
+    <h4><a href="{% url 'main:add_step' pk=certain_task.pk %}">Add Step</a></h4>
+    <br>
+</div>
+
 {% endblock %}

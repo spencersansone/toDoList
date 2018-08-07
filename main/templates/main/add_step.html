@@ -2,30 +2,28 @@
 {% block title %}Exercise | Home{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <form role="form" action="{% url 'main:add_step' pk=certain_task.pk %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-    
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" name="name" placeholder="Enter name">
-                </div>
-                
-                
-                <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-            
-            
-            <br>
-        </div>
-    </div>
+<div class="col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'main:task_list' %}">Tasks</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'main:task_detail' pk=certain_task.id %}">{{certain_task.name}}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Add Step</li>
+        </ol>
+    </nav>    
 </div>
-    
+
+<div class="col-sm-12">
+    <form role="form" action="{% url 'main:add_step' pk=certain_task.pk %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
         
-
-
-
-
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" name="name" placeholder="Enter name">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br>
+</div>
 {% endblock %}

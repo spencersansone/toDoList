@@ -2,27 +2,25 @@
 {% block title %}Exercise | Home{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <form role="form" action="{% url 'main:delete_task' pk=certain_pk %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <h1>Delete {{certain_task.name}}?</h1>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Yes</button>
-                    <button type="button" class="btn btn-primary" onclick="window.history.go(-1)">No</button>
-                </div>
-        </form>
-            
-            
-            <br>
-        </div>
-    </div>
+<div class="col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'main:task_list' %}">Tasks</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Delete {{certain_task.name}}</li>
+        </ol>
+    </nav>    
 </div>
-    
-        
 
-
-
-
+<div class="col-sm-12">
+    <form role="form" action="{% url 'main:delete_task' pk=certain_pk %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h1>Delete {{certain_task.name}}?</h1>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Yes</button>
+            <button type="button" class="btn btn-primary" onclick="window.history.go(-1)">No</button>
+        </div>
+    </form>
+    <br>
+</div>
 {% endblock %}
