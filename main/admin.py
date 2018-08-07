@@ -20,7 +20,7 @@ class TaskEntryList(admin.ModelAdmin):
 admin.site.register(TaskEntry, TaskEntryList)
 
 class StepEntryList(admin.ModelAdmin):
-    list_display = ('step',)
-    ordering = []
+    list_display = ('task_entry','step','datetime_created',)
+    ordering = ['datetime_created']
 
 admin.site.register(StepEntry, StepEntryList)

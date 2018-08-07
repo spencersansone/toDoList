@@ -34,11 +34,22 @@ def today(request):
             datetime_created__day = today.day)
         
         if len(task_entries) == 0:
-            TaskEntry.objects.create(
+            task_entry = TaskEntry.objects.create(
                 task = task,
                 datetime_created = today,
                 completed = False)
-    #check to see which tasks are done and which are not
+                
+            task_steps = Step.objects.filter(task=task)
+            for step in task_steps:
+                StepEntry.objects.create(
+                    task_entry = task_entry,
+                    step = step,
+                    datetime_created = today,
+                    completed = False)
+        
+        
+    
+    
 
     x = {}
     x['today_tasks'] = today_tasks
