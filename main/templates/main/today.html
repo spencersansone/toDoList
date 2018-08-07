@@ -41,7 +41,12 @@ $( document ).ready(function() {
                 <th scope="col">
                     <h2>{{a.0.task.name}}</h2>
                     {% if a.0.completed %}
-                    <button type="button" class="btn btn-success btn-lg btn-block">Done</button>
+                    <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Done</button>
+                        <input type="hidden" class="form-check-input" name="task_entry_toggle_completed" value="{{a.0.id}}">
+                    </form>
+                    
                     {% elif a.1|length == 0 %}
                     <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}

@@ -1,0 +1,13 @@
+undo done for task [INCOMPLETE]
+ 
+==============
+
+correct titles of pages [INCOMPLETE]
+
+make home page buttons [INCOMPLETE]
+
+============================
+
+improve add_task to use accordions [INCOMPLETE]
+
+===============

@@ -30,6 +30,15 @@ def today(request):
         elif "task_entry_toggle_completed" in request.POST:
             pk = request.POST.get("task_entry_toggle_completed")
             task_entry = TaskEntry.objects.get(id=pk)
+            
+            if task_entry.completed:
+                task_step_entries = StepEntry.objects.filter(
+                    task_entry = task_entry)
+                    
+                for step_entry in task_step_entries:
+                    step_entry.completed = False
+                    step_entry.save()
+            
             task_entry.completed = not task_entry.completed
             task_entry.save()
         return HttpResponse('<script>history.back();</script>')
