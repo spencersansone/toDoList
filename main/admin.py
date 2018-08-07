@@ -14,13 +14,13 @@ class StepList(admin.ModelAdmin):
 admin.site.register(Step, StepList)
 
 class TaskEntryList(admin.ModelAdmin):
-    list_display = ('task',)
+    list_display = ('task','completed',)
     ordering = []
 
 admin.site.register(TaskEntry, TaskEntryList)
 
 class StepEntryList(admin.ModelAdmin):
-    list_display = ('task_entry','step','datetime_created',)
+    list_display = ('task_entry','step','datetime_created','completed',)
     ordering = ['datetime_created']
 
 admin.site.register(StepEntry, StepEntryList)

@@ -40,4 +40,4 @@ class StepEntry(models.Model):
     completed = models.BooleanField()
     
     def __str__(self):
-        return "fgf{}{}".format(self.task_entry,self.step.name)
+        return self.step.name

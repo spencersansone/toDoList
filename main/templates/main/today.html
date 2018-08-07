@@ -2,6 +2,20 @@
 {% block title %}Exercise | Home{% endblock %}
 
 {% block body %}
+<script type="text/javascript">
+$( document ).ready(function() {
+    $(window).load(function(){
+        if ($('#refreshed').val() == "false") {
+          $('#refreshed').val("true"); 
+        }
+        else {
+          $('#refreshed').val("false");
+          location.reload();
+        }
+      });
+});
+</script>
+
 <div class="col-sm-12">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -12,9 +26,50 @@
 </div>
 
 <div class="col-sm-12">
-    <h1>{{ today_weekday }}</h1>
-    {% for task in today_tasks %}
-    <h2>{{task}} <a href="{% url 'main:start_new_task_entry' pk=task.pk %}">Start</a></h2>
+    <h1 style="text-align:center;">{{ today_weekday }}</h1>
+    <br>
+    {% for a in array %}
+    <table class="table table-dark" style="text-align:center;">
+        <thead>
+            <tr>
+                <th scope="col">
+                    <h2>{{a.0.task.name}}</h2>
+                    {% if a.0.completed %}
+                    <button type="button" class="btn btn-success btn-lg btn-block">Done</button>
+                    {% elif a.1|length == 0 %}
+                    <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-lg btn-block">Mark As Done</button>
+                        <input type="hidden" class="form-check-input" name="task_entry_toggle_completed" value="{{a.0.id}}">
+                    </form>
+                    
+                    {% else %}
+                    <button type="button" class="btn btn-secondary btn-lg btn-block">In Progress...</button>
+                    {% endif %}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if not a.0.completed %}
+                {% for step_entry in a.1 %}
+                <tr>
+                    <td scope="row">
+                        <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <h6>{{step_entry.step.name}}</h6>
+                            {% if step_entry.completed %}
+                            <button type="submit" class="btn btn-success btn-sm">Done</button>
+                            {% else %}
+                            <button type="submit" class="btn btn-dark btn-sm">Mark Done</button>
+                            {% endif %}
+                            <input type="hidden" class="form-check-input" name="step_entry_toggle_completed" value="{{step_entry.id}}">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
     {% endfor %}
     <br>
 </div>

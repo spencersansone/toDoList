@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views import generic
 from .models import *
-# from .forms import *
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime, timedelta
+from django.views.decorators.cache import cache_control
 
 weekday_array = [
     "monday",
@@ -14,61 +14,78 @@ weekday_array = [
     "friday",
     "saturday",
     "sunday"]
+    
 
 def home(request):
     return render(request, 'main/home.html')
 
+
 def today(request):
-    today = datetime.now()
-    today_weekday = weekday_array[today.weekday()]
-    filter_dict = {today_weekday: True}
-    
-    today_tasks = Task.objects.filter(**filter_dict)
-    
-    # check to see which tasks need an entry to be made and which ones are good
-    for task in today_tasks:
-        task_entries = TaskEntry.objects.filter(
-            task = task,
-            datetime_created__year = today.year,
-            datetime_created__month = today.month,
-            datetime_created__day = today.day)
+    if request.method == "POST":
+        if "step_entry_toggle_completed" in request.POST:
+            print("YESS")
+            pk = request.POST.get("step_entry_toggle_completed")
+            step_entry = StepEntry.objects.get(id=pk)
+            step_entry.completed = not step_entry.completed
+            step_entry.save()
+        elif "task_entry_toggle_completed" in request.POST:
+            pk = request.POST.get("task_entry_toggle_completed")
+            task_entry = TaskEntry.objects.get(id=pk)
+            task_entry.completed = not task_entry.completed
+            task_entry.save()
+        return HttpResponse('<script>history.back();</script>')
+    else:
+        today = datetime.now()
+        today_weekday = weekday_array[today.weekday()]
+        filter_dict = {today_weekday: True}
+        today_tasks = Task.objects.filter(**filter_dict)
+        array = []
         
-        if len(task_entries) == 0:
-            task_entry = TaskEntry.objects.create(
+        for task in today_tasks:
+            task_entries = TaskEntry.objects.filter(
                 task = task,
-                datetime_created = today,
-                completed = False)
-                
-            task_steps = Step.objects.filter(task=task)
-            for step in task_steps:
-                StepEntry.objects.create(
-                    task_entry = task_entry,
-                    step = step,
+                datetime_created__year = today.year,
+                datetime_created__month = today.month,
+                datetime_created__day = today.day)
+            
+            if len(task_entries) == 0:
+                task_entry = TaskEntry.objects.create(
+                    task = task,
                     datetime_created = today,
                     completed = False)
-        
-        
-    
-    
+                    
+                task_steps = Step.objects.filter(task=task)
+                for step in task_steps:
+                    StepEntry.objects.create(
+                        task_entry = task_entry,
+                        step = step,
+                        datetime_created = today,
+                        completed = False)
 
-    x = {}
-    x['today_tasks'] = today_tasks
-    x['today_weekday'] = today_weekday.capitalize()
-    return render(request, 'main/today.html', x)
+        for task in today_tasks:
+            task_entry = TaskEntry.objects.get(task=task)
+            task_step_entries = StepEntry.objects.filter(task_entry=task_entry)
+            done_task_step_entries = task_step_entries.filter(completed=True)
+            if len(task_step_entries) == len(done_task_step_entries):
+                if len(task_step_entries) != 0:
+                    task_entry.completed = True
+                    task_entry.save()
+            array += [[task_entry, task_step_entries]]
+
+        x = {}
+        x['array'] = array
+        x['today_tasks'] = today_tasks
+        x['today_weekday'] = today_weekday.capitalize()
+        return render(request, 'main/today.html', x)
     
 def start_new_task_entry(request, pk):
     certain_task = Task.objects.get(id=pk)
-    
     TaskEntry.objects.create(
         task = certain_task,
         datetime_created = datetime.now(),
         completed = False)
-        
     redirect("main:task")
     
-
-
-
 def task_list(request):
     x = {}
     x['tasks'] = Task.objects.all()
@@ -88,9 +105,7 @@ def add_task(request):
         certain_due_date_option = True if request.POST.get('certain_due_date_option') == "on" else False
         
         n = request.POST.get('name')
-        
 
-        
         if routine_option:
             sun = True if request.POST.get('sunday') == "on" else False
             mon = True if request.POST.get('monday') == "on" else False
@@ -187,3 +202,4 @@ def delete_task_step(request, taskPk, stepPk):
         x['certain_task_pk'] = taskPk
         x['certain_task_step_pk'] = stepPk
         return render(request, 'main/delete_task_step.html', x)
+    
