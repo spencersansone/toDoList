@@ -147,6 +147,14 @@ def delete_task_step(request, taskPk, stepPk):
     certain_task = Task.objects.get(id=taskPk)
     certain_task_step = Step.objects.get(id=stepPk)
     if request.method == "POST":
+        certain_task_steps = Step.objects.filter(task=certain_task)
+        
+        for step in certain_task_steps:
+            if step.step_number > certain_task_step.step_number:
+                # step.update(step_number=step.step_number-1)
+                step.step_number = step.step_number - 1
+                step.save()
+        
         certain_task_step.delete()
         x['pk'] = taskPk 
         return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
