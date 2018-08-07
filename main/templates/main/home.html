@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %}
-{% block title %}Exercise | Home{% endblock %}
+{% block title %}ToDoList | Home{% endblock %}
 
 {% block body %}
 <div class="col-sm-12">
@@ -7,12 +7,17 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page">Home</li>
         </ol>
-    </nav>    
+    </nav>   
+    <br>
 </div>
 
 <div class="col-sm-12">
-    <h1><a href="{% url 'main:task_list' %}">Tasks</a></h1>
-    <h1><a href="{% url 'main:today' %}">Today</a></h1>
+    <a href="{% url 'main:task_list' %}">
+        <button type="button" class="btn btn-primary btn-lg btn-block">Task List</button>
+    </a>
     <br>
+    <a href="{% url 'main:today' %}">
+        <button type="button" class="btn btn-primary btn-lg btn-block">Today</button>
+    </a>
 </div>
 {% endblock %}

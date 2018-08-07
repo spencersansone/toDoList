@@ -1,10 +1,7 @@
-undo done for task [INCOMPLETE]
- 
-==============
 
-correct titles of pages [INCOMPLETE]
+correct titles of pages DONE!
 
-make home page buttons [INCOMPLETE]
+make home page buttons DONE!
 
 ============================
 
