@@ -1,9 +1,5 @@
 
 
-add edit task  [INCOMPLETE]
-
-==============
-
 add buttons to task list [INCOMPLETE]
 
-add split up buttons to task list for delete and edit [INCOMPLETE]
+add split up buttons to task list for delete and edit [INCOMPLETE]>

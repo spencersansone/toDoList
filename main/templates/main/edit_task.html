@@ -1,0 +1,71 @@
+{% extends 'main/base.html' %}
+{% block title %}ToDoList | Add Task{% endblock %}
+
+{% block body %}
+<div class="col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'main:task_list' %}">Tasks</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'main:task_detail' pk=certain_task.id %}">{{certain_task.name}}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Task</li>
+        </ol>
+    </nav>    
+</div>
+
+<div class="col-sm-12">
+    <form role="form" action="{% url 'main:edit_task' pk=certain_task.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" name="name" placeholder="Enter name" value="{{certain_task.name}}">
+        </div>
+            
+        {% if certain_task.routine_task %}
+        <div class="form-group form-check" id="routine_option_div">
+            <label class="form-check-label" for="routinelabel">Routine Dates</label>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="sunday" name="sunday" {% if certain_task.sunday%}checked{%endif%}>
+                <label class="form-check-label" for="sunday">Sunday</label>
+                <br>
+                <input type="checkbox" class="form-check-input" id="monday" name="monday" {% if certain_task.monday%}checked{%endif%}>
+                <label class="form-check-label" for="monday">Monday</label>
+                <br>
+                <input type="checkbox" class="form-check-input" id="tuesday" name="tuesday" {% if certain_task.tuesday%}checked{%endif%}>
+                <label class="form-check-label" for="tuesday">Tuesday</label>
+                <br>
+                <input type="checkbox" class="form-check-input" id="wednesday" name="wednesday" {% if certain_task.wednesday%}checked{%endif%}>
+                <label class="form-check-label" for="wednesday">Wednesday</label>
+                <br>
+                <input type="checkbox" class="form-check-input" id="thursday" name="thursday" {% if certain_task.thursday%}checked{%endif%}>
+                <label class="form-check-label" for="thursday">Thursday</label>
+                <br>
+                <input type="checkbox" class="form-check-input" id="friday" name="friday" {% if certain_task.friday%}checked{%endif%}>
+                <label class="form-check-label" for="friday">Friday</label>
+                <br>
+                <input type="checkbox" class="form-check-input" id="saturday" name="saturday" {% if certain_task.saturday%}checked{%endif%}>
+                <label class="form-check-label" for="saturday">Saturday</label>
+            </div>
+            <input type="hidden" class="form-control" id="routine_option" name="routine_option" value="">
+        </div>
+        {% elif certain_task.certain_due_date_task %}
+        <div class="form-group form-check" id="certain_due_date_option_div">
+            <label class="form-check-label">Certain Date?</label>
+            <input type="date" class="form-control" id="certain_date" name="certain_date" placeholder="Enter name" value="{{certain_task.date|date:"Y-m-d"}}">
+            <input type="hidden" class="form-control" id="certain_due_date_option" name="certain_due_date_option" value="">
+        </div>
+        {% endif %}
+
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br>
+</div>
+
+<div class="col-sm-12">
+
+</div>
+
+
+{% endblock %}
