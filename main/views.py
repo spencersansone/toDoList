@@ -30,7 +30,6 @@ def today(request):
     x = {}
     x['today_tasks'] = today_tasks
     x['today_weekday'] = today_weekday.capitalize()
-    # x['today_task_entries'] = TaskEntry.objects.filter(datetime_created=datetime.today())
     return render(request, 'main/today.html', x)
     
 def start_new_task_entry(request, pk):
@@ -43,7 +42,9 @@ def start_new_task_entry(request, pk):
         
     redirect("main:task")
     
-    
+
+
+
 def task_list(request):
     x = {}
     x['tasks'] = Task.objects.all()
@@ -140,3 +141,18 @@ def delete_task(request, pk):
         x['certain_task'] = certain_task
         x['certain_pk'] = pk
         return render(request, 'main/delete_task.html', x)
+        
+def delete_task_step(request, taskPk, stepPk):
+    x= {}
+    certain_task = Task.objects.get(id=taskPk)
+    certain_task_step = Step.objects.get(id=stepPk)
+    if request.method == "POST":
+        certain_task_step.delete()
+        x['pk'] = taskPk 
+        return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
+    else:
+        x['certain_task'] = certain_task
+        x['certain_task_step'] = certain_task_step
+        x['certain_task_pk'] = taskPk
+        x['certain_task_step_pk'] = stepPk
+        return render(request, 'main/delete_task_step.html', x)

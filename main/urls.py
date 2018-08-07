@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^task_detail/(?P<pk>[0-9]+)/$', views.task_detail, name='task_detail'),
     url(r'^start_new_task_entry/(?P<pk>[0-9]+)/$', views.start_new_task_entry, name='start_new_task_entry'),
     url(r'^delete_task/(?P<pk>[0-9]+)/$', views.delete_task, name='delete_task'),
+    url(r'^delete_task_step/(?P<taskPk>[0-9]+)/(?P<stepPk>[0-9]+)/$', views.delete_task_step, name='delete_task_step'),
 ]
