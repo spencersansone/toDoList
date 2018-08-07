@@ -15,11 +15,11 @@ weekday_array = [
     "saturday",
     "sunday"]
     
-
+@cache_control(must_revalidate=True, max_age=3600)
 def home(request):
     return render(request, 'main/home.html')
 
-
+@cache_control(must_revalidate=True, max_age=3600)
 def today(request):
     if request.method == "POST":
         if "step_entry_toggle_completed" in request.POST:
@@ -77,7 +77,8 @@ def today(request):
         x['today_tasks'] = today_tasks
         x['today_weekday'] = today_weekday.capitalize()
         return render(request, 'main/today.html', x)
-    
+
+@cache_control(must_revalidate=True, max_age=3600)
 def start_new_task_entry(request, pk):
     certain_task = Task.objects.get(id=pk)
     TaskEntry.objects.create(
@@ -85,19 +86,22 @@ def start_new_task_entry(request, pk):
         datetime_created = datetime.now(),
         completed = False)
     redirect("main:task")
-    
+
+@cache_control(must_revalidate=True, max_age=3600)
 def task_list(request):
     x = {}
     x['tasks'] = Task.objects.all()
     return render(request, 'main/task_list.html', x)
 
+@cache_control(must_revalidate=True, max_age=3600)
 def task_detail(request, pk):
     x = {}
     certain_task = Task.objects.get(id=pk)
     x['certain_task'] = certain_task
     x['certain_task_steps'] = Step.objects.filter(task=certain_task)
     return render(request, 'main/task_detail.html', x)
-    
+
+@cache_control(must_revalidate=True, max_age=3600)
 def add_task(request):
     if request.method == "POST":
         
@@ -146,7 +150,8 @@ def add_task(request):
         return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
     else:
         return render(request, 'main/add_task.html')
-        
+
+@cache_control(must_revalidate=True, max_age=3600)
 def add_step(request, pk):
     x = {}
     if request.method == "POST":
@@ -169,7 +174,8 @@ def add_step(request, pk):
     else:
         x['certain_task'] = Task.objects.get(id=pk)
         return render(request, 'main/add_step.html', x)
-        
+
+@cache_control(must_revalidate=True, max_age=3600)   
 def delete_task(request, pk):
     certain_task = Task.objects.get(id=pk)
     if request.method == "POST":
@@ -180,7 +186,8 @@ def delete_task(request, pk):
         x['certain_task'] = certain_task
         x['certain_pk'] = pk
         return render(request, 'main/delete_task.html', x)
-        
+
+@cache_control(must_revalidate=True, max_age=3600) 
 def delete_task_step(request, taskPk, stepPk):
     x= {}
     certain_task = Task.objects.get(id=taskPk)
@@ -202,4 +209,3 @@ def delete_task_step(request, taskPk, stepPk):
         x['certain_task_pk'] = taskPk
         x['certain_task_step_pk'] = stepPk
         return render(request, 'main/delete_task_step.html', x)
-    
