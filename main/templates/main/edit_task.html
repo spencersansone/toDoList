@@ -6,7 +6,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'main:task_list' %}">Tasks</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'main:task_list' %}">Task List</a></li>
             <li class="breadcrumb-item"><a href="{% url 'main:task_detail' pk=certain_task.id %}">{{certain_task.name}}</a></li>
             <li class="breadcrumb-item active" aria-current="page">Edit Task</li>
         </ol>

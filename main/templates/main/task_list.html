@@ -6,18 +6,23 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Tasks</li>
+            <li class="breadcrumb-item active" aria-current="page">Task List</li>
         </ol>
     </nav>    
 </div>
 
 <div class="col-sm-12">
-    <h1 style="font-weight:bold;">Task List</h1>
+    <h1 style="font-weight:bold;text-align:center;">Task List</h1>
+    <br>
     {% for task in tasks %}
-    <h4>
-        <a href="{% url 'main:task_detail' pk=task.pk %}">{{task}}</a>
-        <a href="{% url 'main:delete_task' pk=task.pk %}">Delete</a>
-    </h4>
+    <a href="{% url 'main:task_detail' pk=task.pk %}" class="btn btn-success btn-lg btn-block">{{task}}</a>
+    <div class="btn-group" style="width:100%;">
+        <a href="{% url 'main:edit_task' pk=task.id %}" class="btn btn-primary btn-md col-md-6">Edit</a>
+        <a href="{% url 'main:delete_task' pk=task.id %}" class="btn btn-primary btn-md col-md-6">Delete</a>
+    </div>
+    <div>
+        <br>
+    </div>
     {% endfor %}
     <br>
     <h2><a href="{% url 'main:add_task' %}">Add Task</a></h2>
