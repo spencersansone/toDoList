@@ -15,7 +15,6 @@
 
 <div class="col-sm-12">
     <form role="form" action="{% url 'main:delete_task_step' stepPk=certain_task_step.id taskPk=certain_task_step.task.id %}" method="post" enctype="multipart/form-data">
-        <!--<form role="form" method="post" enctype="multipart/form-data">-->
         {% csrf_token %}
         <h1>Delete {{certain_task_step.name}}?</h1>
         <div class="form-group">

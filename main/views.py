@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.views import generic
 from .models import *
 # from .forms import *
-import datetime
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime, timedelta
@@ -20,13 +19,27 @@ def home(request):
     return render(request, 'main/home.html')
 
 def today(request):
-    today = datetime.now().date()
+    today = datetime.now()
     today_weekday = weekday_array[today.weekday()]
     filter_dict = {today_weekday: True}
     
     today_tasks = Task.objects.filter(**filter_dict)
     
-    
+    # check to see which tasks need an entry to be made and which ones are good
+    for task in today_tasks:
+        task_entries = TaskEntry.objects.filter(
+            task = task,
+            datetime_created__year = today.year,
+            datetime_created__month = today.month,
+            datetime_created__day = today.day)
+        
+        if len(task_entries) == 0:
+            TaskEntry.objects.create(
+                task = task,
+                datetime_created = today,
+                completed = False)
+    #check to see which tasks are done and which are not
+
     x = {}
     x['today_tasks'] = today_tasks
     x['today_weekday'] = today_weekday.capitalize()
@@ -151,7 +164,6 @@ def delete_task_step(request, taskPk, stepPk):
         
         for step in certain_task_steps:
             if step.step_number > certain_task_step.step_number:
-                # step.update(step_number=step.step_number-1)
                 step.step_number = step.step_number - 1
                 step.save()
         
