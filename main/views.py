@@ -25,16 +25,24 @@ def today(request):
     filter_dict = {today_weekday: True}
     
     today_tasks = Task.objects.filter(**filter_dict)
-    print(today_tasks)
-    
-
-        
     
     
     x = {}
     x['today_tasks'] = today_tasks
-    x['today_task_entries'] = TaskEntry.objects.filter(datetime_created=datetime.today())
+    x['today_weekday'] = today_weekday.capitalize()
+    # x['today_task_entries'] = TaskEntry.objects.filter(datetime_created=datetime.today())
     return render(request, 'main/today.html', x)
+    
+def start_new_task_entry(request, pk):
+    certain_task = Task.objects.get(id=pk)
+    
+    TaskEntry.objects.create(
+        task = certain_task,
+        datetime_created = datetime.now(),
+        completed = False)
+        
+    redirect("main:task")
+    
     
 def task_list(request):
     x = {}
@@ -80,7 +88,6 @@ def add_task(request):
         else:
             certain_date = None
 
-        
         created_task = Task.objects.create(
             name = n,
             routine_task = routine_option,
@@ -98,8 +105,6 @@ def add_task(request):
         x['pk'] = created_task.pk
         return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
     else:
-        x={}
-        # x['form'] = AddTaskForm()
         return render(request, 'main/add_task.html')
         
 def add_step(request, pk):
@@ -135,6 +140,3 @@ def delete_task(request, pk):
         x['certain_task'] = certain_task
         x['certain_pk'] = pk
         return render(request, 'main/delete_task.html', x)
-    
-
-# Create your views here.

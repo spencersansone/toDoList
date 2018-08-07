@@ -5,10 +5,10 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
-            <h1>{{ weekday }}</h1>
-            
-            <h1>tasks go here</h1>
-            
+            <h1>{{ today_weekday }}</h1>
+            {% for task in today_tasks %}
+            <h2>{{task}} <a href="{% url 'main:start_new_task_entry' pk=task.pk %}"></a></h2>
+            {% endfor %}
             <br>
         </div>
     </div>
