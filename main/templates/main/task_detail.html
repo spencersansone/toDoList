@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% load static %}
 {% block title %}ToDoList | Task Detail{% endblock %}
 
 {% block body %}
@@ -13,19 +14,33 @@
 </div>
 
 <div class="col-sm-12">
-    <h1>Task: {{certain_task}}</h1>
-    <h1><a href="{% url 'main:edit_task' pk=certain_task.id %}">edit</a></h1>
+    <div class="card">
+        <div class="card-body" style="background:#161616;">
+            <h5 class="card-title">
+                <h1 style="color:white;text-align:center;font-weight:bold;">Task: {{certain_task}}</h1>
+            </h5>
+            <br>
+            <a href="{% url 'main:edit_task' pk=certain_task.id %}" class="btn btn-primary btn-block">Edit Attributes</a>
+        </div>
+    </div>
     <br>
+    <ul class="list-group" style="color:black;">
     {% if certain_task_steps|length == 0 %}
-    <h2>No Steps</h2>
+        <li class="list-group-item">No Steps</li>
     {% else %}
-    <h2>Steps:</h2>
+        <li class="list-group-item" style="text-align:center;">
+            <h4>Steps</h4>
+        </li>
         {% for step in certain_task_steps %}
-        <h4>&emsp;{{step.step_number}}. {{step.name}} <a href="{% url 'main:delete_task_step' stepPk=step.id taskPk=step.task.id %}">del</a></h4>
+        <li class="list-group-item">{{step.step_number}}: {{step.name}}
+            <a href="{% url 'main:delete_task_step' stepPk=step.id taskPk=step.task.id %}" class="btn btn-danger btn-md float-right"><img src="{% static 'main/img/delete.png' %}"></a>
+        </li>
         {% endfor %}
+        <li class="list-group-item">
+            <a href="{% url 'main:add_step' pk=certain_task.pk %}" class="btn btn-success btn-block">Add Step</a>
+        </li>
     {% endif %}
-    <h4><a href="{% url 'main:add_step' pk=certain_task.pk %}">Add Step</a></h4>
-    <br>
+    </ul>
 </div>
 
 {% endblock %}
