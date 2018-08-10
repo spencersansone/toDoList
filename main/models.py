@@ -1,8 +1,15 @@
 from django.db import models
 from django import forms
 
+class TaskCategory(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+
 class Task(models.Model):
     name = models.CharField(max_length=100)
+    task_category = models.ForeignKey(TaskCategory, on_delete=models.CASCADE)
     routine_task = models.BooleanField()
     sunday = models.BooleanField()
     monday = models.BooleanField()
@@ -41,3 +48,5 @@ class StepEntry(models.Model):
     
     def __str__(self):
         return self.step.name
+
+

@@ -158,6 +158,9 @@ def add_task(request):
         certain_due_date_option = True if request.POST.get('certain_due_date_option') == "on" else False
         
         n = request.POST.get('name')
+        t = TaskCategory.objects.get(
+            name=request.POST.get('task_category'))
+        print(t)
 
         if routine_option:
             sun = True if request.POST.get('sunday') == "on" else False
@@ -180,6 +183,7 @@ def add_task(request):
 
         created_task = Task.objects.create(
             name = n,
+            task_category = t,
             routine_task = routine_option,
             sunday = sun,
             monday = mon,
@@ -195,7 +199,9 @@ def add_task(request):
         x['pk'] = created_task.pk
         return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
     else:
-        return render(request, 'main/add_task.html')
+        x = {}
+        x['task_categories'] = TaskCategory.objects.all().order_by('name')
+        return render(request, 'main/add_task.html', x)
 
 
 def add_step(request, pk):

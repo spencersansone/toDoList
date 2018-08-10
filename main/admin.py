@@ -24,3 +24,9 @@ class StepEntryList(admin.ModelAdmin):
     ordering = ['datetime_created']
 
 admin.site.register(StepEntry, StepEntryList)
+
+class TaskCategoryList(admin.ModelAdmin):
+    list_display = ('name',)
+    ordering = ['name']
+
+admin.site.register(TaskCategory, TaskCategoryList)
