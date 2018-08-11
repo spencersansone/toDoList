@@ -265,9 +265,15 @@ def add_task(request):
         certain_due_date_option = True if request.POST.get('certain_due_date_option') == "on" else False
         
         n = request.POST.get('name')
-        t = TaskCategory.objects.get(
-            name=request.POST.get('task_category'))
-        print(t)
+        try:
+            t = TaskCategory.objects.get(
+                name=request.POST.get('task_category'))
+        except:
+            x = {}
+            x['task_categories'] = TaskCategory.objects.all().order_by('name')
+            x['error_message'] = "Error: Please enter a category."
+            return render(request, 'main/add_task.html', x)
+        
 
         if routine_option:
             sun = True if request.POST.get('sunday') == "on" else False

@@ -82,6 +82,12 @@
 
 <div class="col-sm-12">
     <form role="form" action="{% url 'main:add_task' %}" method="post" enctype="multipart/form-data">
+        {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+          <h4>{{error_message}}</h4>
+        </div>
+        {% endif %}
+        
         {% csrf_token %}
 
         <div class="form-group">
