@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^task_category_list/$', views.task_category_list, name='task_category_list'),
     url(r'^task_list/$', views.task_list, name='task_list'),
     url(r'^today/$', views.today, name='today'),
+    url(r'^week_view/$', views.week_view, name='week_view'),
     url(r'^add_task/$', views.add_task, name='add_task'),
     url(r'^edit_task_category/(?P<pk>[0-9]+)/$', views.edit_task_category, name='edit_task_category'),
     url(r'^edit_task/(?P<pk>[0-9]+)/$', views.edit_task, name='edit_task'),

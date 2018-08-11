@@ -91,6 +91,19 @@ def today(request):
         x['today_weekday'] = today_weekday.capitalize()
         return render(request, 'main/today.html', x)
 
+def week_view(request):
+    array = []
+    for weekday in weekday_array:
+        filter_dict = {weekday: True}
+        weekday_tasks = Task.objects.filter(**filter_dict)
+        print(weekday_tasks)
+        array += [[weekday.capitalize(), weekday_tasks]]
+        
+        
+        
+    x = {}
+    x['array'] = array
+    return render(request, 'main/week_view.html', x)
 
 def start_new_task_entry(request, pk):
     certain_task = Task.objects.get(id=pk)

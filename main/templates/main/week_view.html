@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+{% block title %}ToDoList | Home{% endblock %}
+
+{% block body %}
+<div class="col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Home</li>
+        </ol>
+    </nav>   
+    <br>
+</div>
+
+{% for a in array %}
+<div class="col-sm-12">
+    <div class="card">
+      <div class="card-body" style="background:#161616;color:white;text-align:center;">
+        <h1 class="card-title">{{a.0}}</h1>
+        <br>
+        {% for b in a.1 %}
+        <h4>{{b}}</h4>
+        {% endfor %}
+      </div>
+    </div>
+    
+    
+    
+    
+    
+    <!--<h1></h1>-->
+
+</div>
+{% endfor %}
+
+
+
+
+
+
+
+
+{% endblock %}
