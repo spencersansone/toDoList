@@ -50,8 +50,30 @@ $( document ).ready(function() {
         {% else %}
         <button type="button" class="btn btn-secondary btn-lg btn-block">In Progress...</button>
         {% endif %}
+        <br>
+        
+        
+        {% if not a.0.completed %}
+            {% for step_entry in a.1 %}
+                    <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <h6>{{step_entry.step.step_number}}: {{step_entry.step.name}}</h6>
+                        {% if step_entry.completed %}
+                        <button type="submit" class="btn btn-success btn-sm">Done</button>
+                        {% else %}
+                        <button type="submit" class="btn btn-dark btn-sm">Mark Done</button>
+                        {% endif %}
+                        <input type="hidden" class="form-check-input" name="step_entry_toggle_completed" value="{{step_entry.id}}">
+                    </form>
+                    <br>
+            {% endfor %}
+        {% endif %}
+        
+        
+        
       </div>
     </div>
+    <br>
 </div>
 {% endfor %}
 
