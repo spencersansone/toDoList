@@ -16,10 +16,11 @@
 <div class="col-sm-12">
     <div class="card">
         <div class="card-body" style="background:#161616;text-align:center;">
-            <h1 class="card-title" style="color:white;text-align:center;font-weight:bold;">Delete Task:</h1>
+            <h1 class="card-title" style="color:white;text-align:center;font-weight:bold;">Delete Task Category:</h1>
             <form role="form" action="{% url 'main:delete_task_category' pk=certain_pk %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <h4>Delete {{certain_task_category.name}}?</h4>
+                <h4 style="color:red;" >Doing so will delete all tasks associated with this category!</h4>
                 <div class="form-group">
                     <button type="button" class="btn btn-danger" onclick="window.history.go(-1)"><img src="{% static 'main/img/back.png' %}"></button>
                     <button type="submit" class="btn btn-success"><img src="{% static 'main/img/delete.png' %}"></button>
