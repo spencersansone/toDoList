@@ -36,10 +36,10 @@
             <a href="{% url 'main:delete_task_step' stepPk=step.id taskPk=step.task.id %}" class="btn btn-danger btn-md float-right"><img src="{% static 'main/img/delete.png' %}"></a>
         </li>
         {% endfor %}
-        <li class="list-group-item">
-            <a href="{% url 'main:add_step' pk=certain_task.pk %}" class="btn btn-success btn-block">Add Step</a>
-        </li>
     {% endif %}
+    <li class="list-group-item">
+        <a href="{% url 'main:add_step' pk=certain_task.pk %}" class="btn btn-success btn-block">Add Step</a>
+    </li>
     </ul>
 </div>
 
