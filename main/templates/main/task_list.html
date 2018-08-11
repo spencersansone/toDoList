@@ -30,6 +30,7 @@
   <div class="card" style="color:black;background:#ffff8d;border: solid white;border">
     <div class="card-body">
       <h5 class="card-title" style="text-align:center;font-weight: bold;">{{task.name}}</h5>
+      <h6>Category: {{task.task_category.name}}</h6>
       <br>
       <a href="{% url 'main:task_detail' pk=task.id %}" class="btn btn-primary btn-md"><img src="{% static 'main/img/edit.png' %}"></a>
       <a href="{% url 'main:delete_task' pk=task.id %}" class="btn btn-danger btn-md float-right"><img src="{% static 'main/img/delete.png' %}"></a>
