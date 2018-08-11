@@ -26,55 +26,64 @@ $( document ).ready(function() {
 </div>
 
 <div class="col-sm-12">
-    <h1 style="text-align:center;">{{ today_weekday }}</h1>
-    <br>
-</div>
-
-{% for a in array %}
-<div class="col-sm-4">
-    <div class="card" style="color:white;text-align:center;background:#212529;">
-      <div class="card-body">
-        <h5 class="card-title">{{a.0.task.name}}</h5>
-        {% if a.0.completed %}
-        <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success btn-lg btn-block">Done</button>
-            <input type="hidden" class="form-check-input" name="task_entry_toggle_completed" value="{{a.0.id}}">
-        </form>
-        {% elif a.1|length == 0 %}
-        <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-secondary btn-lg btn-block">Mark As Done</button>
-            <input type="hidden" class="form-check-input" name="task_entry_toggle_completed" value="{{a.0.id}}">
-        </form>
-        {% else %}
-        <button type="button" class="btn btn-secondary btn-lg btn-block">In Progress...</button>
-        {% endif %}
-        <br>
-        
-        
-        {% if not a.0.completed %}
-            {% for step_entry in a.1 %}
-                    <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <h6>{{step_entry.step.step_number}}: {{step_entry.step.name}}</h6>
-                        {% if step_entry.completed %}
-                        <button type="submit" class="btn btn-success btn-sm">Done</button>
-                        {% else %}
-                        <button type="submit" class="btn btn-dark btn-sm">Mark Done</button>
-                        {% endif %}
-                        <input type="hidden" class="form-check-input" name="step_entry_toggle_completed" value="{{step_entry.id}}">
-                    </form>
-                    <br>
-            {% endfor %}
-        {% endif %}
-        
-        
-        
-      </div>
+    <div class="card">
+        <div class="card-body" style="background:#161616;color:white;text-align:center;font-weight:bold;">
+            <h1 class="card-title">{{ today_weekday }}</h1>
+        </div>
     </div>
     <br>
 </div>
+
+{% for a in array2 %}
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body" style="background:#161616;color:white;text-align:center;font-weight:bold;">
+            <h2 class="card-title">{{a.0}}</h2>
+        </div>
+    </div>
+    <br>
+</div>
+    {% for b in a.1 %}
+    <div class="col-sm-4">
+        <div class="card" style="color:white;text-align:center;background:#212529;">
+            <div class="card-body">
+                <h5 class="card-title">{{b.0.task.name}}</h5>
+                {% if b.0.completed %}
+                <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Done</button>
+                    <input type="hidden" class="form-check-input" name="task_entry_toggle_completed" value="{{b.0.id}}">
+                </form>
+                {% elif b.1|length == 0 %}
+                <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary btn-lg btn-block">Mark As Done</button>
+                    <input type="hidden" class="form-check-input" name="task_entry_toggle_completed" value="{{b.0.id}}">
+                </form>
+                {% else %}
+                <button type="button" class="btn btn-secondary btn-lg btn-block">In Progress...</button>
+                {% endif %}
+                <br>
+                {% if not b.0.completed %}
+                    {% for step_entry in b.1 %}
+                            <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <h6>{{step_entry.step.step_number}}: {{step_entry.step.name}}</h6>
+                                {% if step_entry.completed %}
+                                <button type="submit" class="btn btn-success btn-sm">Done</button>
+                                {% else %}
+                                <button type="submit" class="btn btn-dark btn-sm">Mark Done</button>
+                                {% endif %}
+                                <input type="hidden" class="form-check-input" name="step_entry_toggle_completed" value="{{step_entry.id}}">
+                            </form>
+                            <br>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <br>
+    </div>
+    {% endfor %}
 {% endfor %}
 
 {% endblock %}
