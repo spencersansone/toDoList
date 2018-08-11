@@ -48,7 +48,6 @@ def today(request):
         today_tasks = Task.objects.filter(**filter_dict)
         all_task_categories = TaskCategory.objects.all()
         array = []
-        array2 = []
         
         for task in today_tasks:
             task_entries = TaskEntry.objects.filter(
@@ -70,8 +69,7 @@ def today(request):
                         step = step,
                         datetime_created = today,
                         completed = False)
-        
-        
+
         for task_category in all_task_categories:
             tasks_in_category = today_tasks.filter(
                 task_category = task_category)
@@ -85,63 +83,10 @@ def today(request):
                         task_entry.completed = True
                         task_entry.save()
                 tasks_array += [[task_entry,task_step_entries]]
-            array2 += [[task_category,tasks_array]]
-        print(array2)
-            
-            
-        
-        
-        
-        
-        
-        
-        # =============================
-        # for task in today_tasks:
-        #     task_entries = TaskEntry.objects.filter(
-        #         task = task,
-        #         datetime_created__year = today.year,
-        #         datetime_created__month = today.month,
-        #         datetime_created__day = today.day)
-            
-        #     if len(task_entries) == 0:
-        #         task_entry = TaskEntry.objects.create(
-        #             task = task,
-        #             datetime_created = today,
-        #             completed = False)
-                    
-        #         task_steps = Step.objects.filter(task=task)
-        #         for step in task_steps:
-        #             StepEntry.objects.create(
-        #                 task_entry = task_entry,
-        #                 step = step,
-        #                 datetime_created = today,
-        #                 completed = False)
-
-        for task in today_tasks:
-            task_entry = TaskEntry.objects.get(task=task)
-            task_step_entries = StepEntry.objects.filter(task_entry=task_entry)
-            done_task_step_entries = task_step_entries.filter(completed=True)
-            if len(task_step_entries) == len(done_task_step_entries):
-                if len(task_step_entries) != 0:
-                    task_entry.completed = True
-                    task_entry.save()
-            array += [[task_entry, task_step_entries]]
-        # ==================================
-
-
-
-
-
-
-
-
-
-
+            array += [[task_category,tasks_array]]
 
         x = {}
         x['array'] = array
-        x['array2'] = array2
-        print(array)
         x['today_tasks'] = today_tasks
         x['today_weekday'] = today_weekday.capitalize()
         return render(request, 'main/today.html', x)
