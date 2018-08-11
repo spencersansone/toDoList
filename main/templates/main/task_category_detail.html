@@ -1,0 +1,46 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}ToDoList | Task Detail{% endblock %}
+
+{% block body %}
+<div class="col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'main:task_list' %}">Task List</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{certain_task.name}}</li>
+        </ol>
+    </nav>    
+</div>
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body" style="background:#161616;">
+            <h5 class="card-title">
+                <h1 style="color:white;text-align:center;font-weight:bold;">Task: {{certain_task}}</h1>
+            </h5>
+            <br>
+            <a href="{% url 'main:edit_task' pk=certain_task.id %}" class="btn btn-primary btn-block">Edit Attributes</a>
+        </div>
+    </div>
+    <br>
+    <ul class="list-group" style="color:black;">
+    {% if certain_task_steps|length == 0 %}
+        <li class="list-group-item">No Steps</li>
+    {% else %}
+        <li class="list-group-item" style="text-align:center;">
+            <h4>Steps</h4>
+        </li>
+        {% for step in certain_task_steps %}
+        <li class="list-group-item">{{step.step_number}}: {{step.name}}
+            <a href="{% url 'main:delete_task_step' stepPk=step.id taskPk=step.task.id %}" class="btn btn-danger btn-md float-right"><img src="{% static 'main/img/delete.png' %}"></a>
+        </li>
+        {% endfor %}
+    {% endif %}
+    <li class="list-group-item">
+        <a href="{% url 'main:add_step' pk=certain_task.pk %}" class="btn btn-success btn-block">Add Step</a>
+    </li>
+    </ul>
+</div>
+
+{% endblock %}

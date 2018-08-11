@@ -107,6 +107,13 @@ def task_detail(request, pk):
     x['certain_task'] = certain_task
     x['certain_task_steps'] = Step.objects.filter(task=certain_task)
     return render(request, 'main/task_detail.html', x)
+
+def task_category_detail(request, pk):
+    redirect()
+    x = {}
+    certain_task_category = TaskCategory.objects.get(id=pk)
+    x['certain_task_category'] = certain_task_category
+    return render(request, 'main/task_category_detail.html', x)
     
 def edit_task(request, pk):
     certain_task = Task.objects.get(id=pk)
@@ -150,7 +157,46 @@ def edit_task(request, pk):
     x = {}
     x['certain_task'] = certain_task
     return render(request, 'main/edit_task.html', x)
+    
+def edit_task_category(request, pk):
+    certain_task_category = TaskCategory.objects.get(id=pk)
+    if request.method == "POST":
+        n = request.POST.get('name')
+        certain_task_category.name = n
+        certain_task_category.save()
+        x = {}
+        x['pk'] = pk
+        return redirect('main:task_category_list')
+    else:
+        x = {}
+        x['certain_task_category'] = certain_task_category
+        return render(request, 'main/edit_task_category.html', x)
 
+def task_category_list(request):
+    x = {}
+    x['task_categories'] = TaskCategory.objects.all()
+    return render(request, 'main/task_category_list.html', x)
+    
+
+def add_task_category(request):
+    if request.method == "POST":
+        n = request.POST.get('name')
+        
+        same_name_cats = TaskCategory.objects.filter(
+            name = n)
+        
+        if len(same_name_cats) != 0:
+            x = {}
+            x['error_message'] = "{} already exists. Please try another name.".format(n)
+            return render(request, 'main/add_task_category.html', x)
+        
+        
+        TaskCategory.objects.create(
+            name = n)
+            
+        return HttpResponseRedirect(reverse('main:task_category_list'))
+    else:
+        return render(request, 'main/add_task_category.html')
 
 def add_task(request):
     if request.method == "POST":
@@ -238,6 +284,17 @@ def delete_task(request, pk):
         x['certain_task'] = certain_task
         x['certain_pk'] = pk
         return render(request, 'main/delete_task.html', x)
+
+def delete_task_category(request, pk):
+    certain_task_category = TaskCategory.objects.get(id=pk)
+    if request.method == "POST":
+        certain_task_category.delete()
+        return redirect('main:task_category_list')
+    else:
+        x = {}
+        x['certain_task_category'] = certain_task_category
+        x['certain_pk'] = pk
+        return render(request, 'main/delete_task_category.html', x)
 
  
 def delete_task_step(request, taskPk, stepPk):

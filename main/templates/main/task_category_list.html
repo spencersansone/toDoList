@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}ToDoList | Task List{% endblock %}
+
+{% block body %}
+<div class="col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Task Category List</li>
+        </ol>
+    </nav>    
+</div>
+
+<div class="col-sm-12">
+  <div class="card">
+    <div class="card-body" style="background:#161616;">
+      <h5 class="card-title">
+        <h1 style="color:white;text-align:center;font-weight:bold;">Task Category List</h1>
+      </h5>
+    </div>
+  </div>
+  <br>
+</div>
+
+
+
+<div class="col-sm-12">
+  <ul class="list-group" style="color:black;">
+    {% for task_category in task_categories %}
+    <li class="list-group-item">
+      {{task_category}}
+      <a href="{% url 'main:edit_task_category' pk=task_category.id %}" class="btn btn-primary btn-md float-right"><img src="{% static 'main/img/edit.png' %}"></a>
+      <a href="{% url 'main:delete_task_category' pk=task_category.id %}" class="btn btn-danger btn-md float-right"><img src="{% static 'main/img/delete.png' %}"></a>
+    </li>
+    {% endfor %}
+    <li class="list-group-item">
+      <a href="{% url 'main:add_task_category' %}" class="btn btn-success btn-lg btn-block">Add Task Category</a>
+    </li>
+  </ul>
+  <br>
+  
+</div>
+
+
+
+
+
+{% endblock %}

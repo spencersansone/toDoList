@@ -90,7 +90,7 @@
         </div>
         
         <div class="form-group">
-            <label for="exampleFormControlSelect1">Category</label>
+            <label for="exampleFormControlSelect1">Category <a href="{% url 'main:add_task_category' %}">Add</a></label>
             <select class="form-control" name="task_category" id="task_category">
               {% for task_category in task_categories %}
               <option>{{task_category}}</option>
