@@ -12,6 +12,30 @@
             $('#routine_option_div').hide()
             $('#certain_due_date_option_div').show()
         });
+        $("#every_day").change(function () {
+            if ($(this).is(':checked')) {
+                $('#sunday').prop('checked', true);
+                $('#monday').prop('checked', true);
+                $('#tuesday').prop('checked', true);
+                $('#wednesday').prop('checked', true);
+                $('#thursday').prop('checked', true);
+                $('#friday').prop('checked', true);
+                $('#saturday').prop('checked', true);
+            } else {
+                $('#sunday').prop('checked', false);
+                $('#monday').prop('checked', false);
+                $('#tuesday').prop('checked', false);
+                $('#wednesday').prop('checked', false);
+                $('#thursday').prop('checked', false);
+                $('#friday').prop('checked', false);
+                $('#saturday').prop('checked', false);
+            }
+        });
+        $("#sunday, #monday, #tuesday, #wednesday, #thursday, #friday, #saturday").change(function () {
+            if ($(this).not(':checked')) {
+                $('#every_day').prop('checked', false);
+            }
+        });
         
         
         
@@ -119,6 +143,7 @@
         <div class="form-group form-check" id="routine_option_div">
             <!--<input type="checkbox" class="form-check-input" id="routine_option" name="routine_option">-->
             <label class="form-check-label" for="routinelabel">Routine Dates</label>
+            
             <div class="form-group form-check">
                 <input type="checkbox" class="form-check-input" id="sunday" name="sunday">
                 <label class="form-check-label" for="sunday">Sunday</label>
@@ -140,6 +165,10 @@
                 <br>
                 <input type="checkbox" class="form-check-input" id="saturday" name="saturday">
                 <label class="form-check-label" for="saturday">Saturday</label>
+                <br>
+                <br>
+                <input type="checkbox" class="form-check-input" id="every_day">
+                <label class="form-check-label" for="every_day">Every Day</label>
             </div>
         </div>
         
