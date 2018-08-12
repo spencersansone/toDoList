@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^add_task/$', views.add_task, name='add_task'),
     url(r'^edit_task_category/(?P<pk>[0-9]+)/$', views.edit_task_category, name='edit_task_category'),
     url(r'^edit_task/(?P<pk>[0-9]+)/$', views.edit_task, name='edit_task'),
+    url(r'^edit_task_step/(?P<taskPk>[0-9]+)/(?P<stepPk>[0-9]+)/$', views.edit_task_step, name='edit_task_step'),
     url(r'^add_step/(?P<pk>[0-9]+)/$', views.add_step, name='add_step'),
     url(r'^add_task_category/$', views.add_task_category, name='add_task_category'),
     url(r'^task_category_detail/(?P<pk>[0-9]+)/$', views.task_category_detail, name='task_category_detail'),

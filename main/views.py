@@ -18,6 +18,19 @@ weekday_array = [
 def home(request):
     return render(request, 'main/home.html')
 
+def edit_task_step(request, taskPk, stepPk):
+    certain_task_step = Step.objects.get(id=stepPk)
+    if request.method == "POST":
+        n = request.POST.get('name')
+        certain_task_step.name = n
+        certain_task_step.save()
+        x = {}
+        x['pk'] = taskPk
+        return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
+    else:
+        x = {}
+        x['certain_task_step'] = certain_task_step
+        return render(request, 'main/edit_task_step.html', x)
 
 def today(request):
     if request.method == "POST":
