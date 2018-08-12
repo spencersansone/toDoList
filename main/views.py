@@ -18,6 +18,35 @@ weekday_array = [
 def home(request):
     return render(request, 'main/home.html')
 
+def move_task_step_down(request, pk):
+    certain_task_step = Step.objects.get(id=pk)
+    certain_task = certain_task_step.task
+    below_task_step = Step.objects.get(
+        task = certain_task,
+        step_number = certain_task_step.step_number + 1)
+    certain_task_step.step_number += 1
+    certain_task_step.save()
+    below_task_step.step_number -= 1
+    below_task_step.save()
+    x = {}
+    x['pk'] = certain_task.id
+    return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
+
+def move_task_step_up(request, pk):
+    certain_task_step = Step.objects.get(id=pk)
+    certain_task = certain_task_step.task
+    below_task_step = Step.objects.get(
+        task = certain_task,
+        step_number = certain_task_step.step_number - 1)
+    certain_task_step.step_number -= 1
+    certain_task_step.save()
+    below_task_step.step_number += 1
+    below_task_step.save()
+    x = {}
+    x['pk'] = certain_task.id
+    return HttpResponseRedirect(reverse('main:task_detail', kwargs=x))
+    
+
 def edit_task_step(request, taskPk, stepPk):
     certain_task_step = Step.objects.get(id=stepPk)
     if request.method == "POST":
@@ -136,12 +165,18 @@ def task_list(request):
 def task_detail(request, pk):
     x = {}
     certain_task = Task.objects.get(id=pk)
+    certain_task_steps = Step.objects.filter(task=certain_task)
+    greatest_step_number = 1
+    for step in certain_task_steps:
+        if step.step_number > greatest_step_number:
+            greatest_step_number = step.step_number
+    
     x['certain_task'] = certain_task
-    x['certain_task_steps'] = Step.objects.filter(task=certain_task)
+    x['certain_task_steps'] = Step.objects.filter(task=certain_task).order_by('step_number')
+    x['greatest_step_number'] = greatest_step_number
     return render(request, 'main/task_detail.html', x)
 
 def task_category_detail(request, pk):
-    redirect()
     x = {}
     certain_task_category = TaskCategory.objects.get(id=pk)
     x['certain_task_category'] = certain_task_category

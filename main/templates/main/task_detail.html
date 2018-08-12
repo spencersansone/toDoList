@@ -33,8 +33,23 @@
         </li>
         {% for step in certain_task_steps %}
         <li class="list-group-item">{{step.step_number}}: {{step.name}}
-            <a href="{% url 'main:edit_task_step' stepPk=step.id taskPk=step.task.id %}" class="btn btn-primary btn-md float-right"><img src="{% static 'main/img/edit.png' %}"></a>
-            <a href="{% url 'main:delete_task_step' stepPk=step.id taskPk=step.task.id %}" class="btn btn-danger btn-md float-right"><img src="{% static 'main/img/delete.png' %}"></a>
+            <a href="{% url 'main:edit_task_step' stepPk=step.id taskPk=step.task.id %}" class="btn btn-primary btn-md float-right">
+                <img src="{% static 'main/img/edit.png' %}">
+            </a>
+            {% if step.step_number != 1 %}
+            <a href="{% url 'main:move_task_step_up' pk=step.id  %}" class="btn btn-primary btn-md float-right">
+                <img src="{% static 'main/img/up.png' %}">
+            </a>
+            {% endif %}
+            <div><br></div>
+            <a href="{% url 'main:delete_task_step' stepPk=step.id taskPk=step.task.id %}" class="btn btn-danger btn-md float-right">
+                <img src="{% static 'main/img/delete.png' %}">
+            </a>
+            {% if step.step_number != greatest_step_number %}
+            <a href="{% url 'main:move_task_step_down' pk=step.id  %}" class="btn btn-primary btn-md float-right">
+                <img src="{% static 'main/img/down.png' %}">
+            </a>
+            {% endif %}
         </li>
         {% endfor %}
     {% endif %}
