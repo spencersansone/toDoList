@@ -117,7 +117,11 @@ def today(request):
                 task_category = task_category)
             tasks_array = []
             for task in tasks_in_category:
-                task_entry = TaskEntry.objects.get(task=task)
+                task_entry = TaskEntry.objects.get(
+                    task=task,
+                    datetime_created__day = today.day,
+                    datetime_created__month = today.month,
+                    datetime_created__year = today.year)
                 task_step_entries = StepEntry.objects.filter(task_entry=task_entry)
                 done_task_step_entries = task_step_entries.filter(completed=True)
                 if len(task_step_entries) == len(done_task_step_entries):
