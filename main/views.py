@@ -122,7 +122,7 @@ def today(request):
                     datetime_created__day = today.day,
                     datetime_created__month = today.month,
                     datetime_created__year = today.year)
-                task_step_entries = StepEntry.objects.filter(task_entry=task_entry)
+                task_step_entries = StepEntry.objects.filter(task_entry=task_entry).order_by('step__step_number')
                 done_task_step_entries = task_step_entries.filter(completed=True)
                 if len(task_step_entries) == len(done_task_step_entries):
                     if len(task_step_entries) != 0:
