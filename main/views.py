@@ -4,6 +4,7 @@ from .models import *
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime, timedelta
+from django.http import HttpResponse
 
 weekday_array = [
     "monday",
@@ -13,6 +14,155 @@ weekday_array = [
     "friday",
     "saturday",
     "sunday"]
+    
+
+
+
+# ==============
+def today2(request):
+    return render(request, 'main/today2.html')
+
+def today2_loaddata(request):
+    
+    response = """"""
+    today = datetime.now()
+    today_weekday = weekday_array[today.weekday()]
+    filter_dict = {today_weekday: True}
+    today_tasks = Task.objects.filter(**filter_dict)
+    all_task_categories = TaskCategory.objects.all()
+    array = []
+    
+    for task in today_tasks:
+        task_entries = TaskEntry.objects.filter(
+            task = task,
+            datetime_created__year = today.year,
+            datetime_created__month = today.month,
+            datetime_created__day = today.day)
+        
+        if len(task_entries) == 0:
+            task_entry = TaskEntry.objects.create(
+                task = task,
+                datetime_created = today,
+                completed = False)
+                
+            task_steps = Step.objects.filter(task=task)
+            for step in task_steps:
+                StepEntry.objects.create(
+                    task_entry = task_entry,
+                    step = step,
+                    datetime_created = today,
+                    completed = False)
+    
+
+    
+    for task_category in all_task_categories:
+        tasks_in_category = today_tasks.filter(
+            task_category = task_category)
+        response += """
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body" style="background:#00183f;color:white;text-align:center;font-weight:bold;">
+                    <h2 class="card-title">{}</h2>
+                </div>
+            </div>
+            <br>
+        </div>
+        """.format(task_category)
+        for task in tasks_in_category:
+            task_entry = TaskEntry.objects.get(
+                task=task,
+                datetime_created__day = today.day,
+                datetime_created__month = today.month,
+                datetime_created__year = today.year)
+            task_step_entries = StepEntry.objects.filter(task_entry=task_entry).order_by('step__step_number')
+            done_task_step_entries = task_step_entries.filter(completed=True)
+            
+            response += """
+            <div class="col-sm-4">
+                <div class="card" style="color:white;text-align:center;background:#212529;">
+                    <div class="card-body">
+                        <h5 class="card-title">{}</h5>
+            """.format(task_entry.task.name)
+            
+            if task_entry.completed:
+                response += """
+                <form role="form" action="" method="post" enctype="multipart/form-data" class="task_entry">
+                    <button type="button" class="btn btn-success btn-lg btn-block doneButton">Done</button>
+                    <input type="hidden" class="form-check-input" name="task_entry_toggle_completed" value="{}">
+                </form>
+                """.format(task_entry.id)
+            elif len(task_step_entries) == 0:
+                response += """
+                <form role="form" enctype="multipart/form-data" id="task_entry">
+                    <button type="button" class="btn btn-secondary btn-lg btn-block" id="task_entry_button">Mark As Done</button>
+                    <input type="hidden" class="form-check-input" name="task_entry_toggle_completed" value="{}">
+                </form>
+                """.format(task_entry.id)
+            else: 
+                response += """
+                <button type="button" class="btn btn-secondary btn-lg btn-block task_entry">In Progress...</button>"""
+                for step_entry in task_step_entries:
+                    response += """
+                    <form role="form" enctype="multipart/form-data" class="task_entry task_entry_step">
+                        <h6>{}: {}</h6>
+                    """.format(step_entry.step.step_number,step_entry.step.name)
+                    if step_entry.completed:
+                        response += """
+                        <button type="submit" class="btn btn-success btn-sm">Done</button>
+                        """
+                    else:
+                        response += """
+                        <button type="submit" class="btn btn-dark btn-sm">Mark Done</button>
+                        """
+                    
+                    response += """
+                        <input type="hidden" class="form-check-input" name="step_entry_toggle_completed" value="{}">
+                    </form>
+                    <br>
+                    """.format(step_entry.id)
+                    
+            response += """
+            </div>
+                </div>
+                <br>
+            </div>
+            """
+    
+    return HttpResponse(response)
+
+def today2_toggle_task_entry(request):
+    print(request.GET.get('pk'))
+    
+    pk = request.GET.get('pk')
+    
+    certain_task_step = StepEntry.objects.get(id=pk)
+    
+    certain_task_step.completed = not certain_task_step.completed
+    
+    certain_task_step.save()
+    
+    # return None
+    return HttpResponse("")
+# ================
+
+
+def test(request):
+    x = {}
+    x['test'] = StepEntry.objects.get(id=29) 
+    return render(request, 'main/test.html', x)
+    
+def testajax(request):
+    stepEntryPk = request.GET.get('stepEntryPk')
+    stepEntry = StepEntry.objects.get(id=stepEntryPk)
+    
+    stepEntry.completed = not stepEntry.completed
+    stepEntry.save()
+    
+    data = {
+        'completed' : StepEntry.objects.get(id=stepEntryPk).completed
+    }
+    
+    return JsonResponse(data)
     
 
 def home(request):
@@ -62,7 +212,62 @@ def edit_task_step(request, taskPk, stepPk):
         return render(request, 'main/edit_task_step.html', x)
 
 def today(request):
-    if request.method == "POST":
+    if request.is_ajax():
+        if 'step_entry_pk' in request.POST:
+            step_entry_pk = request.POST.get('step_entry_pk')
+            task_entry_pk = request.POST.get('task_entry_pk')
+            certain_step_entry = StepEntry.objects.get(id=step_entry_pk)
+            certain_task_entry = TaskEntry.objects.get(id=task_entry_pk)
+            
+            certain_step_entry.completed = not certain_step_entry.completed
+            certain_step_entry.save()
+            
+            total_step_entries = StepEntry.objects.filter(
+                task_entry=certain_task_entry)
+            done_step_entries = total_step_entries.filter(completed=True)
+            
+            if len(total_step_entries) == len(done_step_entries):
+                certain_task_entry.completed = True
+                certain_task_entry.save()
+                return HttpResponse('taskCompleted')
+            
+        elif 'task_entry_pk' in request.POST:
+            pk = request.POST.get('task_entry_pk')
+            certain_task_entry = TaskEntry.objects.get(id=pk)
+            certain_task_entry.completed = not certain_task_entry.completed
+            certain_task_entry.save()
+            certain_task_entry_step_entries = StepEntry.objects.filter(
+                    task_entry=certain_task_entry).order_by('step__step_number')
+                    
+            if not certain_task_entry.completed:
+                certain_task_entry_step_entries.update(completed=False)
+            else:
+                certain_task_entry_step_entries.update(completed=True)
+            
+            
+            response = """"""
+            
+            if not len(certain_task_entry_step_entries) == 0:
+                response += """
+                <br>"""
+
+
+            for step_entry in certain_task_entry_step_entries:
+                response += """
+                <form class="step_form" role="form" action="/today/" method="post" enctype="multipart/form-data">
+                    <h6>{}: {}</h6>""".format(step_entry.step.step_number,
+                    step_entry.step.name)
+                response += """
+                    <button type="button" class="btn btn-dark btn-sm step_marker">Mark Done</button>"""
+                response += """
+                    <input type="hidden" class="form-check-input" name="step_entry" value="{}">
+                    <div><br></div>
+                </form>""".format(step_entry.id)
+            print(response)
+            return HttpResponse(response)
+
+        return HttpResponse('')
+    elif request.method == "POST":
         if "step_entry_toggle_completed" in request.POST:
             pk = request.POST.get("step_entry_toggle_completed")
             step_entry = StepEntry.objects.get(id=pk)

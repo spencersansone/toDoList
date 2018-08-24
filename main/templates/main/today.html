@@ -1,19 +1,75 @@
 {% extends 'main/base.html' %}
 {% block title %}ToDoList | Today{% endblock %}
 
+
+
 {% block body %}
+{% csrf_token %}
 <script type="text/javascript">
-$( document ).ready(function() {
-    $(window).load(function(){
-        if ($('#refreshed').val() == "false") {
-          $('#refreshed').val("true"); 
-        }
-        else {
-          $('#refreshed').val("false");
-          location.reload();
-        }
-      });
-});
+    $(function(){
+        csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+        
+        $(".task_marker").click(function(){
+            var button = $(this);
+            var task_entry_pk = button.siblings('input').val();
+            $.ajax({
+                type: 'POST',
+                url: '/today/',
+                data: {
+                    task_entry_pk: task_entry_pk,
+                    csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+                    if (button.hasClass('btn-success')){
+                        button.text('Mark All Steps Done');
+                        button.removeClass('btn-success');
+                        button.addClass('btn-secondary');
+                        $(response).insertAfter(button);
+                    } else {
+                        button.text('Done');
+                        button.removeClass('btn-dark');
+                        button.addClass('btn-success');
+                        button.siblings('.step_form,br').remove();
+                    }
+                }
+            });
+        });
+        
+        $("body").on('click', '.step_marker', function () {
+            var button = $(this);
+            console.log(button);
+            var step_entry_pk = button.siblings('input').val();
+            var task_entry_pk = button.parent().siblings('input').val();
+            $.ajax({
+                type: 'POST',
+                url: '/today/',
+                data: {
+                    step_entry_pk: step_entry_pk,
+                    task_entry_pk: task_entry_pk,
+                    csrfmiddlewaretoken: csrf_token
+                },
+                success: function(response){
+                    if (response == "taskCompleted"){
+                        task_marker = button.parent().siblings('button');
+                        task_marker.text('Done');
+                        task_marker.removeClass('btn-dark');
+                        task_marker.addClass('btn-success');
+                        button.parent().parent().children('.step_form,br').remove();
+                    } else {
+                        if (button.hasClass('btn-success')){
+                            button.text('Mark Done');
+                            button.removeClass('btn-success');
+                            button.addClass('btn-dark');
+                        } else {
+                            button.text('Done');
+                            button.removeClass('btn-dark');
+                            button.addClass('btn-success');
+                        }
+                    }
+                },
+            });
+        });
+    });
 </script>
 
 <div class="col-sm-12">
@@ -49,34 +105,37 @@ $( document ).ready(function() {
             <div class="card-body">
                 <h5 class="card-title">{{b.0.task.name}}</h5>
                 {% if b.0.completed %}
-                <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-success btn-lg btn-block">Done</button>
-                    <input type="hidden" class="form-check-input" name="task_entry_toggle_completed" value="{{b.0.id}}">
-                </form>
+              
+                    
+                    <button type="button" class="btn btn-success btn-lg btn-block task_marker">Done</button>
+                    <input type="hidden" class="form-check-input" name="task_entry" value="{{b.0.id}}">
+
                 {% elif b.1|length == 0 %}
-                <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-secondary btn-lg btn-block">Mark As Done</button>
-                    <input type="hidden" class="form-check-input" name="task_entry_toggle_completed" value="{{b.0.id}}">
-                </form>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block task_marker">Mark Done</button>
+                    <input type="hidden" class="form-check-input" name="task_entry" value="{{b.0.id}}">
                 {% else %}
-                <button type="button" class="btn btn-secondary btn-lg btn-block">In Progress...</button>
+               
+                    <button type="button" class="btn btn-secondary btn-lg btn-block task_marker">Mark All Steps Done</button>
+                    <input type="hidden" class="form-check-input" name="task_entry" value="{{b.0.id}}">
+
+                
                 {% endif %}
                 <br>
                 {% if not b.0.completed %}
                     {% for step_entry in b.1 %}
-                            <form role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
+                            <form class="step_form" role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
                                 <h6>{{step_entry.step.step_number}}: {{step_entry.step.name}}</h6>
                                 {% if step_entry.completed %}
-                                <button type="submit" class="btn btn-success btn-sm">Done</button>
+                                <!--<button type="submit" class="btn btn-success btn-sm">Done</button>-->
+                                <button type="button" class="btn btn-success btn-sm step_marker">Done</button>
                                 {% else %}
-                                <button type="submit" class="btn btn-dark btn-sm">Mark Done</button>
+                                <!--<button type="submit" class="btn btn-dark btn-sm">Mark Done</button>-->
+                                <button type="button" class="btn btn-dark btn-sm step_marker">Mark Done</button>
                                 {% endif %}
-                                <input type="hidden" class="form-check-input" name="step_entry_toggle_completed" value="{{step_entry.id}}">
+                                <input type="hidden" class="form-check-input" name="step_entry" value="{{step_entry.id}}">
+                                <div><br></div>
                             </form>
-                            <br>
+
                     {% endfor %}
                 {% endif %}
             </div>

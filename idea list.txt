@@ -1,0 +1,4 @@
+more jquery in today html
+
+cache buttons so that loading time is better
+

@@ -1,0 +1,39 @@
+{% extends 'main/base.html' %}
+{% block title %}ToDoList | Home{% endblock %}
+{% load cache%}
+
+{% block body %}
+<script type="text/javascript">
+    $(function() {
+        $.ajax({
+            url: '/today2/loaddata/',
+            success: function (response) {
+                // console.log(response)
+                $(response).insertAfter('#mainDiv');
+                $('#step_mark_as_done').on('click', function(event) {
+                  console.log('sfsdf');
+                });
+            }
+        });
+    });
+</script>
+
+{% cache 500 breadcrumb %}
+<div class="col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Home</li>
+        </ol>
+    </nav>   
+    <br>
+</div>
+{% endcache %}
+
+
+<div class="col-sm-12" id="mainDiv">
+    <!--<button type="button" class="btn btn-primary btn-sm">Small button</button>-->
+
+</div>
+
+
+{% endblock %}
