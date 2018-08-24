@@ -3,17 +3,25 @@
 
 {% block body %}
 <script>
-    var is_routine = {{certain_task.routine_task|lower}}
-    var is_certain_due_date = {{certain_task.certain_due_date_task|lower}}
-    var sunday = {{certain_task.sunday|lower}}
+    var is_routine = {{certain_task.routine_task|lower}};
+    var is_certain_due_date = {{certain_task.certain_due_date_task|lower}};
+    var sunday = {{certain_task.sunday|lower}};
+    var monday = {{certain_task.monday|lower}};
+    var tuesday = {{certain_task.tuesday|lower}};
+    var wednesday = {{certain_task.wednesday|lower}};
+    var thursday = {{certain_task.thursday|lower}};
+    var friday = {{certain_task.friday|lower}};
+    var saturday = {{certain_task.saturday|lower}};
 </script>
 <script type="text/javascript">
     $(function() {
         $("#routine_option").change(function () {
+            $('#certain_due_date_option').prop('checked', false);
             $('#certain_due_date_option_div').hide()
             $('#routine_option_div').show()
         });
         $("#certain_due_date_option").change(function () {
+            $('#routine_option').prop('checked', false);
             $('#routine_option_div').hide()
             $('#certain_due_date_option_div').show()
         });
@@ -44,15 +52,41 @@
         $('#routine_option_div').hide()
         $('#certain_due_date_option_div').hide()
         if (is_routine == true){
-            $('#routine_option_div').show()
+            // $('#routine_option_div').show();
+            $('#routine_option').click();
+            var every_day = sunday & monday & tuesday & wednesday & thursday & friday & saturday
+            if ( every_day == true){
+                $('#every_day').click();
+            } else {
+                if (sunday == true){
+                    $('#sunday').prop('checked', true);
+                }
+                if (monday == true){
+                    $('#monday').prop('checked', true);
+                }
+                if (tuesday == true){
+                    $('#tuesday').prop('checked', true);
+                }
+                if (wednesday == true){
+                    $('#wednesday').prop('checked', true);
+                }
+                if (thursday == true){
+                    $('#thursday').prop('checked', true);
+                }
+                if (friday == true){
+                    $('#friday').prop('checked', true);
+                }
+                if (saturday == true){
+                    $('#saturday').prop('checked', true);
+                }
+            }
         } else if (is_certain_due_date == true){
-            $('#certain_due_date_option_div').show()
+            // $('#certain_due_date_option_div').show();
+            $('#certain_due_date_option').click();
         }
         
         
-        if (sunday == true){
-            
-        }
+
     });
     
 </script>
@@ -81,6 +115,18 @@
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" class="form-control" name="name" placeholder="Enter name" value="{{certain_task.name}}">
+        </div>
+        
+        <div class="form-group">
+            <label for="task_category">Category <a href="{% url 'main:add_task_category' %}">Add</a></label>
+            <select class="form-control" name="task_category" id="task_category">
+              {% for task_category in task_categories %}
+
+                <option {% if task_category.name == certain_task.task_category.name %}selected="selected"{% endif %}>
+                    {{task_category}}
+                </option>
+              {% endfor %}
+            </select>
         </div>
         
         <div class="form-group">
