@@ -120,8 +120,9 @@
 
                 
                 {% endif %}
-                <br>
+                
                 {% if not b.0.completed %}
+                    <br>
                     {% for step_entry in b.1 %}
                             <form class="step_form" role="form" action="{% url 'main:today' %}" method="post" enctype="multipart/form-data">
                                 <h6>{{step_entry.step.step_number}}: {{step_entry.step.name}}</h6>
