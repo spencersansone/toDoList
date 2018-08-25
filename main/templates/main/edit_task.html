@@ -112,17 +112,6 @@
                 error_list += "<p>A name is required.</p>";
             }
             
-            if (cat_empty) {
-                error_list += "<p>A category is required.</p>";
-            }
-            
-            if (both_options_off){
-                error_list += "<p>You must choose either routine or one-time.</p>";
-                $('#errorModalBody').append(error_list);
-                $('#errorModal').modal('show');
-                return false;
-            }
-            
             if (routine_option){
                 var sun = $('#sunday').is(':checked'); 
                 var mon = $('#monday').is(':checked');
