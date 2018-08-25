@@ -5,10 +5,12 @@
 <script type="text/javascript">
     $(function() {
         $("#routine_option").change(function () {
+            $('#certain_due_date_option').prop('checked', false);
             $('#certain_due_date_option_div').hide()
             $('#routine_option_div').show()
         });
         $("#certain_due_date_option").change(function () {
+            $('#routine_option').prop('checked', false);
             $('#routine_option_div').hide()
             $('#certain_due_date_option_div').show()
         });
@@ -32,9 +34,105 @@
             }
         });
         $("#sunday, #monday, #tuesday, #wednesday, #thursday, #friday, #saturday").change(function () {
-            if ($(this).not(':checked')) {
+            var sun = $('#sunday').is(':checked'); 
+            var mon = $('#monday').is(':checked');
+            var tue = $('#tuesday').is(':checked');
+            var wed = $('#wednesday').is(':checked');
+            var thu = $('#thursday').is(':checked');
+            var fri = $('#friday').is(':checked');
+            var sat = $('#saturday').is(':checked');
+            
+            var all_checked = sun && mon && tue && wed && thu && fri && sat;
+            
+            if (all_checked===true) {
+                $('#every_day').prop('checked', true);
+                console.log('fsdfsdfdf')
+            } else if ($(this).not(':checked')) {
                 $('#every_day').prop('checked', false);
             }
+        });
+        
+        $('form').submit(function(){
+            $('#errorModalBody').empty()
+            error_list = ""
+            certain_due_date_option = $('#certain_due_date_option').is(':checked');
+            routine_option = $('#routine_option').is(':checked');
+            both_options_off = !(certain_due_date_option || routine_option)
+            name_empty = $("input[name=name]").val() == "";
+            cat_empty = $( "#task_category option:selected" ).text() == "";
+            // console.log(cat_empty);
+            // return false;
+            
+            
+            if (name_empty) {
+                error_list += "<p>A name is required.</p>"
+            }
+            if (cat_empty) {
+                error_list += "<p>A category is required.</p>"
+            }
+            
+            if (both_options_off){
+                error_list += "<p>You must choose either routine or one-time.</p>"
+                $('#errorModalBody').append(error_list);
+                $('#errorModal').modal('show');
+                return false;
+            }
+            
+
+            
+            // if (){
+                
+            // }
+            
+            
+            if (routine_option){
+                var sun = $('#sunday').is(':checked'); 
+                var mon = $('#monday').is(':checked');
+                var tue = $('#tuesday').is(':checked');
+                var wed = $('#wednesday').is(':checked');
+                var thu = $('#thursday').is(':checked');
+                var fri = $('#friday').is(':checked');
+                var sat = $('#saturday').is(':checked');
+                var none_checked = !(sun || mon || tue || wed || thu || fri || sat);
+                
+                if (none_checked===true){
+                    error_list += "<p>You must choose at least one weekday.</p>"
+                }
+            } else if (certain_due_date_option) {
+                date_empty = $('#certain_date').val() == ""
+                console.log(date_empty)
+                // return false;
+                
+                if (date_empty){
+                    error_list += "<p>You must choose a date.</p>"
+                }
+                
+                
+                
+                
+            }
+            // else if (certain_due_date_option){
+                
+            // }
+            
+            if (error_list != ""){
+                $('#errorModalBody').append(error_list);
+                $('#errorModal').modal('show');
+                return false;
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            // alert('<p>ertretre</p><p>adasd</p>');
+            // $('#myModal').modal('toggle');
+            // $('#errorModal').modal('show');
+            // $('#myModal').modal('hide');
+            // return false;
         });
         
         
@@ -185,8 +283,22 @@
     <br>
 </div>
 
-<div class="col-sm-12">
-
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="color:black;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="errorModalLabel" >Error:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="errorModalBody">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 
