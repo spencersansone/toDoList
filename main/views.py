@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime, timedelta
 from django.http import HttpResponse
+from django.db.models import Q
 
 weekday_array = [
     "monday",
@@ -291,8 +292,9 @@ def today(request):
     else:
         today = datetime.now()
         today_weekday = weekday_array[today.weekday()]
-        filter_dict = {today_weekday: True}
-        today_tasks = Task.objects.filter(**filter_dict)
+        query1 = Q(**{today_weekday: True})
+        query2 = Q(date=today)
+        today_tasks = Task.objects.filter( query1 | query2 )
         all_task_categories = TaskCategory.objects.all()
         array = []
         
