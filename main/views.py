@@ -372,20 +372,109 @@ def task_list(request):
     x['tasks'] = Task.objects.all()
     return render(request, 'main/task_list.html', x)
 
-
 def task_detail(request, pk):
-    x = {}
-    certain_task = Task.objects.get(id=pk)
-    certain_task_steps = Step.objects.filter(task=certain_task)
-    greatest_step_number = 1
-    for step in certain_task_steps:
-        if step.step_number > greatest_step_number:
-            greatest_step_number = step.step_number
+    if request.is_ajax():
+        certain_task = Task.objects.get(id=pk)
+        if 'name' in request.POST:
+            n = request.POST.get('name')
+            certain_task_steps = Step.objects.filter(
+                task = certain_task).order_by('-step_number')
+            if len(certain_task_steps) == 0:
+                greatest_step_number = 0
+            else:
+                greatest_step_number = certain_task_steps[0].step_number
+            Step.objects.create(
+                name = n,
+                task = certain_task,
+                step_number = greatest_step_number + 1)
+        elif "delete_step_pk" in request.POST:
+            certain_task = Task.objects.get(id=pk)
+            step_pk = int(request.POST.get('delete_step_pk'))
+            task_step_to_delete = Step.objects.get(id=step_pk)
+            task_step_to_delete.delete()
+        elif "edit_step_pk" in request.POST:
+            certain_task = Task.objects.get(id=pk)
+            step_pk = int(request.POST.get('edit_step_pk'))
+            new_step_name = request.POST.get('new_step_name')
+            task_step_to_edit = Step.objects.get(id=step_pk)
+            task_step_to_edit.name = new_step_name
+            task_step_to_edit.save()
+        elif "move_up_step_pk" in request.POST:
+            step_pk = int(request.POST.get('move_up_step_pk'))
+            certain_step = Step.objects.get(id=step_pk)
+            above_step = Step.objects.get(
+                step_number = certain_step.step_number - 1)
+            certain_step.step_number -= 1
+            above_step.step_number += 1
+            certain_step.save()
+            above_step.save()
+        elif "move_down_step_pk" in request.POST:
+            step_pk = int(request.POST.get('move_down_step_pk'))
+            certain_step = Step.objects.get(id=step_pk)
+            below_step = Step.objects.get(
+                step_number = certain_step.step_number + 1)
+            certain_step.step_number += 1
+            below_step.step_number -= 1
+            certain_step.save()
+            below_step.save()    
+            
     
-    x['certain_task'] = certain_task
-    x['certain_task_steps'] = Step.objects.filter(task=certain_task).order_by('step_number')
-    x['greatest_step_number'] = greatest_step_number
-    return render(request, 'main/task_detail.html', x)
+        certain_task_steps = Step.objects.filter(task=certain_task).order_by('step_number')
+        response = """"""
+        for index, step in enumerate(certain_task_steps):
+            up = True
+            down = True
+            
+            step.step_number = index + 1
+            step.save()
+            
+            if step.step_number == len(certain_task_steps):
+                down = False
+            elif step.step_number == 1:
+                up = False
+            else:
+                pass
+            
+            response += """
+            <li class="list-group-item">
+            <input class="form-check-input" value="{}" type="hidden">
+            <div>{}: {}</div>
+            <br>
+            <a class="btn btn-danger btn-md float-right delete_step">
+                <img src="/static/main/img/delete.png">
+            </a>
+            <a class="btn btn-primary btn-md float-right edit_step">
+                <img src="/static/main/img/edit.png">
+            </a>
+            <a class="btn btn-{} btn-md float-right{}">
+                <img src="/static/main/img/up.png">
+            </a>
+            <a class="btn btn-{} btn-md float-right{}">
+                <img src="/static/main/img/down.png">
+            </a>
+            </li>""".format(
+            step.id,
+            step.step_number,
+            step.name,
+            "primary" if up else "secondary",
+            " step_up" if up else "",
+            "primary" if down else "secondary",
+            " step_down" if down else "")
+            
+        return HttpResponse(response)
+    else:
+        x = {}
+        certain_task = Task.objects.get(id=pk)
+        certain_task_steps = Step.objects.filter(task=certain_task)
+        greatest_step_number = 1
+        for step in certain_task_steps:
+            if step.step_number > greatest_step_number:
+                greatest_step_number = step.step_number
+        
+        x['certain_task'] = certain_task
+        x['certain_task_steps'] = Step.objects.filter(task=certain_task).order_by('step_number')
+        x['greatest_step_number'] = greatest_step_number
+        return render(request, 'main/task_detail.html', x)
 
 def task_category_detail(request, pk):
     x = {}

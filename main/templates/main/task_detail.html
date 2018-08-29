@@ -2,7 +2,151 @@
 {% load static %}
 {% block title %}ToDoList | Task Detail{% endblock %}
 
+
 {% block body %}
+{% csrf_token %}
+<script>
+    var task_id = {{certain_task.id}}
+</script>
+<script type="text/javascript">
+    $(function() {
+        csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+        
+        $("body").on('click', '#add_step_button', function () {
+            $('#add_step_modal').modal("show");
+        });
+        
+        $('#add_step_submit').click(function(){
+            var name = $("input[name='name']").val()
+            $.ajax({
+                type: 'POST',
+                url: '/task_detail/' + task_id + '/',
+                data: {
+                  name: name,
+                  csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+                    $('#step_list').empty();
+                    $('#step_list').append('<li class="list-group-item" style="text-align:center;" id="steps_title"><h4>Steps</h4></li>');
+                    $('#step_list').append(response);
+                    $('#step_list').append('<li class="list-group-item"><button type="button" class="btn btn-success btn-block" id="add_step_button">Add Step</button></li>');
+                    $('#add_step_modal').modal('hide');
+                }
+            });
+        });
+        
+        $("body").on('click', '.delete_step', function () {
+            var pk = $(this).siblings('input').val();
+            console.log(pk);
+            var step_title = $(this).siblings('div').text();
+            var step_title_edited = step_title.substring(3,step_title.length);
+            $('#delete_step_modal_body').empty();
+            $('#delete_step_modal_body').append('<input type="hidden" class="form-check-input" value="'+ pk +'">');
+            $('#delete_step_modal_body').append('<p>Delete ' + step_title_edited + '?</p>');
+            $('#delete_step_modal').modal('show');
+        });
+        
+        $("body").on('click', '.delete_step_submit', function () {
+            step_pk = $('#delete_step_modal_body').children('input').val()
+            $.ajax({
+                type: 'POST',
+                url: '/task_detail/' + task_id + '/',
+                data: {
+                  delete_step_pk: step_pk,
+                  csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+                    $('#step_list').empty();
+                    $('#step_list').append('<li class="list-group-item" style="text-align:center;" id="steps_title"><h4>Steps</h4></li>');
+                    $('#step_list').append(response);
+                    $('#step_list').append('<li class="list-group-item"><button type="button" class="btn btn-success btn-block" id="add_step_button">Add Step</button></li>');
+                    $('#delete_step_modal').modal('hide');
+                }
+            });
+        });
+        
+        $("body").on('click', '.edit_step', function () {
+            var pk = $(this).siblings('input').val();
+            console.log(pk);
+            var step_title = $(this).siblings('div').text();
+            var step_title_edited = step_title.substring(3,step_title.length);
+            $('#edit_step_pk').val(pk);
+            $('#edit_step_name').val(step_title_edited);
+            $('#edit_step_modal').modal('show');
+            
+            
+            
+        });
+        
+        $("body").on('click', '.edit_step_submit', function () {
+            step_pk = $('#edit_step_modal_body').children('input').val();
+            console.log(step_pk);
+            new_step_name = $('#edit_step_name').val();
+            console.log(new_step_name);
+            $.ajax({
+                type: 'POST',
+                url: '/task_detail/' + task_id + '/',
+                data: {
+                  new_step_name: new_step_name,
+                  edit_step_pk: step_pk,
+                  csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+                    $('#step_list').empty();
+                    $('#step_list').append('<li class="list-group-item" style="text-align:center;" id="steps_title"><h4>Steps</h4></li>');
+                    $('#step_list').append(response);
+                    $('#step_list').append('<li class="list-group-item"><button type="button" class="btn btn-success btn-block" id="add_step_button">Add Step</button></li>');
+                    $('#edit_step_modal').modal('hide');
+                }
+            });
+        });
+        
+        $("body").on('click', '.step_up', function () {
+            var pk = $(this).siblings('input').val();
+            console.log(pk);
+            $.ajax({
+                type: 'POST',
+                url: '/task_detail/' + task_id + '/',
+                data: {
+                  move_up_step_pk: pk,
+                  csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+                    $('#step_list').empty();
+                    $('#step_list').append('<li class="list-group-item" style="text-align:center;" id="steps_title"><h4>Steps</h4></li>');
+                    $('#step_list').append(response);
+                    $('#step_list').append('<li class="list-group-item"><button type="button" class="btn btn-success btn-block" id="add_step_button">Add Step</button></li>');
+                    $('#edit_step_modal').modal('hide');
+                }
+            });
+        });
+        
+        
+        $("body").on('click', '.step_down', function () {
+            var pk = $(this).siblings('input').val();
+            console.log(pk);
+            $.ajax({
+                type: 'POST',
+                url: '/task_detail/' + task_id + '/',
+                data: {
+                  move_down_step_pk: pk,
+                  csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+                    $('#step_list').empty();
+                    $('#step_list').append('<li class="list-group-item" style="text-align:center;" id="steps_title"><h4>Steps</h4></li>');
+                    $('#step_list').append(response);
+                    $('#step_list').append('<li class="list-group-item"><button type="button" class="btn btn-success btn-block" id="add_step_button">Add Step</button></li>');
+                    $('#edit_step_modal').modal('hide');
+                }
+            });
+        });
+        
+        
+    });
+</script>
+
+
 <div class="col-sm-12">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -24,38 +168,39 @@
         </div>
     </div>
     <br>
-    <ul class="list-group" style="color:black;">
+    <ul class="list-group" style="color:black;" id="step_list">
     {% if certain_task_steps|length == 0 %}
         <li class="list-group-item">No Steps</li>
     {% else %}
-        <li class="list-group-item" style="text-align:center;">
+        <li class="list-group-item" style="text-align:center;" id="steps_title">
             <h4>Steps</h4>
         </li>
         {% for step in certain_task_steps %}
         <li class="list-group-item">
+            <input type="hidden" class="form-check-input" value="{{ step.id }}">
             <div>{{step.step_number}}: {{step.name}}</div>
             <br>
-            <a href="{% url 'main:delete_task_step' stepPk=step.id taskPk=step.task.id %}" class="btn btn-danger btn-md float-right">
+            <a class="btn btn-danger btn-md float-right delete_step">
                 <img src="{% static 'main/img/delete.png' %}">
             </a>
-            <a href="{% url 'main:edit_task_step' stepPk=step.id taskPk=step.task.id %}" class="btn btn-primary btn-md float-right">
+            <a class="btn btn-primary btn-md float-right edit_step">
                 <img src="{% static 'main/img/edit.png' %}">
             </a>
             {% if step.step_number != 1 %}
-            <a href="{% url 'main:move_task_step_up' pk=step.id  %}" class="btn btn-primary btn-md float-right">
+            <a class="btn btn-primary btn-md float-right step_up">
                 <img src="{% static 'main/img/up.png' %}">
             </a>
             {% else %}
-            <a class="btn btn-secondary btn-md float-right">
+            <a class="btn btn-secondary btn-md float-right step_up">
                 <img src="{% static 'main/img/up.png' %}">
             </a>
             {% endif %}
             {% if step.step_number != greatest_step_number %}
-            <a href="{% url 'main:move_task_step_down' pk=step.id  %}" class="btn btn-primary btn-md float-right">
+            <a class="btn btn-primary btn-md float-right step_down">
                 <img src="{% static 'main/img/down.png' %}">
             </a>
             {% else %}
-            <a class="btn btn-secondary btn-md float-right">
+            <a class="btn btn-secondary btn-md float-right step_down">
                 <img src="{% static 'main/img/down.png' %}">
             </a>
             {% endif %}
@@ -63,9 +208,84 @@
         {% endfor %}
     {% endif %}
     <li class="list-group-item">
-        <a href="{% url 'main:add_step' pk=certain_task.pk %}" class="btn btn-success btn-block">Add Step</a>
+        <!--<a href="{% url 'main:add_step' pk=certain_task.pk %}" class="btn btn-success btn-block">Add Step</a>-->
+        <button type="button" class="btn btn-success btn-block" id="add_step_button">Add Step</button>
     </li>
     </ul>
 </div>
+
+<div class="modal fade" id="add_step_modal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="color:black;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="errorModalLabel" >Enter Step Name:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form role="form" action="{% url 'main:task_detail' pk=certain_task.id %}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" name="name" placeholder="Enter name">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="add_step_submit" >Okay</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="delete_step_modal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="color:black;" id="delete_step_modal_content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Step:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="delete_step_modal_body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary">Cancel</button>
+        <button type="button" class="btn btn-danger delete_step_submit" >Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="edit_step_modal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="color:black;" id="edit_step_modal_content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Step Name:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="edit_step_modal_body">
+          <form role="form" action="{% url 'main:task_detail' pk=certain_task.id %}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="edit_step_name">Name</label>
+                <input type="text" class="form-control" name="edit_step_name" id="edit_step_name">
+            </div>
+          </form>
+          <input class="form-check-input" id="edit_step_pk" type="hidden">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary">Cancel</button>
+        <button type="button" class="btn btn-danger edit_step_submit" >Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 {% endblock %}
