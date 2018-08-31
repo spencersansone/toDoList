@@ -105,11 +105,11 @@
                 {% if b.0.completed %}
               
                     
-                    <button type="button" class="btn btn-success btn-lg btn-block task_marker">Done</button>
+                    <button type="button" class="btn btn-success btn-lg btn-block task_marker" style="white-space: normal;">Done</button>
                     <input type="hidden" class="form-check-input" name="task_entry" value="{{b.0.id}}">
 
                 {% elif b.1|length == 0 %}
-                    <button type="button" class="btn btn-secondary btn-lg btn-block task_marker">Mark Done</button>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block task_marker" style="white-space: normal;">Mark Done</button>
                     <input type="hidden" class="form-check-input" name="task_entry" value="{{b.0.id}}">
                 {% else %}
                
