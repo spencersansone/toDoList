@@ -460,7 +460,6 @@ def task_detail(request, pk):
             " step_up" if up else "",
             "primary" if down else "secondary",
             " step_down" if down else "")
-            
         return HttpResponse(response)
     else:
         x = {}
@@ -586,7 +585,37 @@ def add_task_category(request):
         return render(request, 'main/add_task_category.html')
 
 def add_task(request):
-    if request.method == "POST":
+    if request.is_ajax():
+        if "category_name" in request.POST:
+            n = request.POST.get('category_name')
+            new_category = TaskCategory.objects.create(
+                name = n)
+            return HttpResponse(new_category.name)
+        elif "category_list" in request.POST:
+            all_categories = TaskCategory.objects.all().order_by('name')
+            
+            response = """
+            <ul class="list-group" style="color:black;">"""
+            
+            for category in all_categories:
+                n = category.name
+                pk = category.id
+                
+                response += """
+                <li class="list-group-item" id="cat_{}">
+                    {}
+                    <a id="delete_category" class="btn btn-primary btn-md float-right"><img src="/static/main/img/edit.png"></a>
+                    <a id="edit_category" class="btn btn-danger btn-md float-right"><img src="/static/main/img/delete.png"></a>
+                    <input type="hidden" class="form-check-input" id="cat_{}_id" name="sunday">
+                </li>
+                """.format(pk,n,pk,n)
+            response += """
+            </ul>"""
+            print(response)
+            
+            return HttpResponse(response)
+            
+    elif request.method == "POST":
         routine_option = True if request.POST.get('routine_option') == "on" else False
         certain_due_date_option = True if request.POST.get('certain_due_date_option') == "on" else False
         

@@ -4,6 +4,8 @@
 {% block body %}
 <script type="text/javascript">
     $(function() {
+        csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+        
         $("#routine_option").change(function () {
             $('#certain_due_date_option').prop('checked', false);
             $('#certain_due_date_option_div').hide()
@@ -51,6 +53,44 @@
                 $('#every_day').prop('checked', false);
             }
         });
+        
+        
+        $("body").on('click', '#category_button', function () {
+            
+            $.ajax({
+                type: 'POST',
+                url: '/add_task/',
+                data: {
+                  category_list: true,
+                  csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+                    $('#category_modal_body').empty();
+                    $('#category_modal_body').append(response);
+                    $('#category_modal').modal('show');
+                }
+            });
+            
+ 
+            
+        });
+        
+        // $("body").on('click', '#add_category_submit', function () {
+        //     var category_name = $("input[name='category_name']").val()
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: '/add_task/',
+        //         data: {
+        //           category_name: category_name,
+        //           csrfmiddlewaretoken : csrf_token
+        //         },
+        //         success: function(response){
+        //             $('#task_category').append('<option>' + response + '</option>')
+        //             $('#add_category_modal').modal('hide');
+        //         }
+        //     });
+        // });
+        
         
         $('form').submit(function(){
             $('#errorModalBody').empty();
@@ -135,7 +175,10 @@
         </div>
         
         <div class="form-group">
-            <label for="exampleFormControlSelect1">Category <a href="{% url 'main:add_task_category' %}">Add</a></label>
+            <label for="exampleFormControlSelect1">
+                Category
+                <a class="btn btn-primary" id="category_button" role="button">Add</a>
+            </label>
             <select class="form-control" name="task_category" id="task_category">
               {% for task_category in task_categories %}
               <option>{{task_category}}</option>
@@ -212,6 +255,24 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="category_modal" tabindex="-1" role="dialog" aria-labelledby="category_modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="color:black;">
+      <div class="modal-header">
+        <h5 class="modal-title">Category List</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="category_modal_body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="add_category_submit" >Okay</button>
       </div>
     </div>
   </div>
