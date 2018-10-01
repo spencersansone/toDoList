@@ -6,6 +6,37 @@
     $(function() {
         csrf_token = $('input[name=csrfmiddlewaretoken]').val();
         
+        function updateCategoryOptions(){
+          $.ajax({
+              type: 'POST',
+              url: '/add_task/',
+              data: {
+                option_list: true,
+                csrfmiddlewaretoken : csrf_token
+              },
+              success: function(response){
+                  console.log(response)
+                  $("#task_category").empty().append(response);
+                  
+              }
+          });
+        }
+        
+      //   console.log(a);
+        
+      //   function test(){
+      //     var a;
+      //     var b = getCurrentCategoryOptions(function(x){
+      //       a = x;
+      //       console.log('x is ' + x);
+      //     })
+      //     return a;
+      //   }
+        
+      // console.log(test())
+        
+        
+        
         $("#routine_option").change(function () {
             $('#certain_due_date_option').prop('checked', false);
             $('#certain_due_date_option_div').hide()
@@ -56,7 +87,6 @@
         
         
         $("body").on('click', '#category_button', function () {
-            
             $.ajax({
                 type: 'POST',
                 url: '/add_task/',
@@ -70,10 +100,163 @@
                     $('#category_modal').modal('show');
                 }
             });
-            
- 
-            
         });
+        
+        $("body").on('click', '.delete_category', function () {
+           console.log('tried to collapse');
+           var id = $(this).parent().siblings('input').val();
+           console.log(id)
+           var class_status = $('#collapse_'+id).attr('class');
+           
+           
+           $('#collapse_'+id).children('div').empty();
+           $('#collapse_'+id).children('div').append('\
+            <h3>THIS WILL DELETE ALL TASKS IN THIS CATEGORY! Are you sure?</h3>\
+            <div class="container">\
+              <div class="row">\
+                <div class="col">\
+                  <button type="button" class="cancel_delete_category btn btn-secondary btn-lg btn-block">Cancel</button>\
+                </div>\
+                <div class="col">\
+                  <button type="button" class="btn btn-danger btn-lg btn-block" id="delete_category_submit">Delete</button>\
+                </div>\
+              </div>\
+            </div>');
+           
+           if(class_status == 'collapse'){
+             $('#collapse_'+id).collapse('toggle');
+           }
+
+        });
+        
+        $("body").on('click', '.edit_category', function () {
+           var id = $(this).parent().siblings('input').val();
+           
+           var class_status = $('#collapse_'+id).attr('class');
+           
+           $('#collapse_'+id).children('div').empty();
+           $('#collapse_'+id).children('div').append('\
+            <form>\
+              <div class="form-row">\
+                  <div class="col-10">\
+                      <input type="text" class="form-control" id="input_edit_category_name" placeholder="Enter title">\
+                  </div>\
+                  <div class="col-2">\
+                      <button type="button" class="btn btn-primary" id="edit_category_submit">Add</button>\
+                  </div>\
+              </div>\
+            </form>');
+           
+           
+           if(class_status == 'collapse'){
+             $('#collapse_'+id).collapse('toggle');
+           }
+           
+           
+
+           
+          // $('#collapse_'+id).collapse('toggle');
+
+        });
+        
+        $("body").on('click', '.cancel_delete_category', function () {
+          var pk = $(this).parent().parent().parent().parent().parent().attr('id').split('_')[1];
+          $('#collapse_'+pk).collapse('toggle');
+        });
+        
+        
+        
+        $("body").on('click', '#delete_category_submit', function () {
+            var pk = $(this).parent().parent().parent().parent().parent().attr('id').split('_')[1];
+
+            var category_name = $('#heading_'+pk).children('h4').text()
+
+            
+            $.ajax({
+                type: 'POST',
+                url: '/add_task/',
+                data: {
+                  delete_category_pk: pk,
+                  csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+                    $('#category_modal_body').empty();
+                    $('#category_modal_body').append(response);
+                    // $("#task_category option[value='" +  + "']").children('')
+                    // $("#task_category option[value='add']").remove();
+                    updateCategoryOptions()
+                }
+            });
+        });
+        
+        $("body").on('click', '#edit_category_submit', function () {
+            var pk = $(this).parent().parent().parent().parent().parent().attr('id').split('_')[1];
+            var new_name = $('#input_edit_category_name').val();
+            var current_name = $('#heading_'+pk).children('h4').text()
+            console.log(pk)
+            $.ajax({
+                type: 'POST',
+                url: '/add_task/',
+                data: {
+                  edit_category_pk: pk,
+                  new_name: new_name,
+                  csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+                    $('#category_modal_body').empty();
+                    $('#category_modal_body').append(response);
+                    $('#task_category').empty();
+                    
+                    updateCategoryOptions()
+                    
+                    
+                }
+            });
+        });
+        
+         $("body").on('click', '#add_category_submit', function () {
+            var add_category_name = $('#input_add_category_name').val();
+            $.ajax({
+                type: 'POST',
+                url: '/add_task/',
+                data: {
+                  add_category_name: add_category_name,
+                  csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+
+                    console.log('qweqweqw');
+                    $('#category_modal_body').empty();
+                    $('#category_modal_body').append(response);
+                    updateCategoryOptions()
+                }
+            });
+        });
+        
+        $("body").on('click', '.create_category', function () {
+            $('#create_category_modal').modal('show');
+            $('#create_category_modal_body').append('');
+        });
+        
+        $("body").on('click', '#create_category_submit', function () {
+            var name = $('#add_category_name').val();
+            $.ajax({
+                type: 'POST',
+                url: '/add_task/',
+                data: {
+                  add_category_name: name,
+                  csrfmiddlewaretoken : csrf_token
+                },
+                success: function(response){
+                    $('#create_category_modal').modal('hide');
+                    $('#category_modal_body').empty();
+                    $('#category_modal_body').append(response);
+                    
+                    $('#create_category_modal').empty();
+                }
+            });
+        });
+        
         
         // $("body").on('click', '#add_category_submit', function () {
         //     var category_name = $("input[name='category_name']").val()
@@ -270,13 +453,74 @@
         </button>
       </div>
       <div class="modal-body" id="category_modal_body">
+          <div class="accordion" id="accordionExample">
+              <div class="card">
+                <div class="card-header" id="headingOne">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Collapsible Group Item #1
+                    </button>
+                  </h5>
+                </div>
+            
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                  <div class="card-body">
+                    testing
+                  </div>
+                </div>
+              </div>
+              
+              
+            </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="add_category_submit" >Okay</button>
       </div>
     </div>
   </div>
 </div>
 
+<div class="modal fade" id="delete_category_confirmation_modal" tabindex="-1" role="dialog" aria-labelledby="delete_category_confirmation_modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="color:black;">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Category:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="delete_category_confirmation_modal_body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="delete_category_submit">Yes</button>
+        <button type="button" class="btn btn-secondary">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="create_category_modal" tabindex="-1" role="dialog" aria-labelledby="create_category_modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="color:black;">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Category:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="create_category_modal_body">
+        <form role="form" action="{% url 'main:add_task' %}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="add_category_name">Name</label>
+                <input type="text" class="form-control" name="add_category_name" id="add_category_name">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="create_category_submit">Yes</button>
+        <button type="button" class="btn btn-secondary">No</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

@@ -586,7 +586,20 @@ def add_task_category(request):
 
 def add_task(request):
     if request.is_ajax():
-        if "category_name" in request.POST:
+        
+        if "option_list" in request.POST:
+            print('here')
+            all_categories = TaskCategory.objects.all().order_by('name')
+            response = """
+            """
+            
+            for category in all_categories:
+                response += """
+                <option>{}</option>""".format(category.name)
+            
+
+            return HttpResponse(response)
+        elif "category_name" in request.POST:
             n = request.POST.get('category_name')
             new_category = TaskCategory.objects.create(
                 name = n)
@@ -595,26 +608,277 @@ def add_task(request):
             all_categories = TaskCategory.objects.all().order_by('name')
             
             response = """
-            <ul class="list-group" style="color:black;">"""
+            <div class="accordion" id="accordionExample">
+            """
             
             for category in all_categories:
                 n = category.name
                 pk = category.id
                 
                 response += """
-                <li class="list-group-item" id="cat_{}">
-                    {}
-                    <a id="delete_category" class="btn btn-primary btn-md float-right"><img src="/static/main/img/edit.png"></a>
-                    <a id="edit_category" class="btn btn-danger btn-md float-right"><img src="/static/main/img/delete.png"></a>
-                    <input type="hidden" class="form-check-input" id="cat_{}_id" name="sunday">
-                </li>
-                """.format(pk,n,pk,n)
+                <div class="card" id="card_{}">
+                    <div class="card-header" id="heading_{}">
+                        <h4 style="text-align:center;">{}</h4>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <a class="edit_category btn btn-primary btn-sm btn-block"><img src="/static/main/img/edit.png"></a>
+                                    </div>
+                                    <div class="col">
+                                        <a class="delete_category btn btn-danger btn-sm btn-block"><img src="/static/main/img/delete.png"></a>
+                                    </div>
+                                    <input type="hidden" class="form-check-input" id="cat_{}_id" value="{}">
+                                </div>
+                            </div>
+                        
+                    </div>
+                    <div id="collapse_{}" class="collapse" aria-labelledby="heading_{}" data-parent="#accordionExample">
+                        <div class="card-body">
+                        </div>
+                    </div>
+                </div>
+                """.format(pk,pk,n,pk,pk,pk,pk)
             response += """
-            </ul>"""
+                <div class="card">
+                    <div class="card-header" id="headingLast">
+                        <h5 class="mb-0">
+                            <button class="btn btn-success btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapse_last" aria-expanded="true" aria-controls="collapse_last">
+                                Add Category
+                            </button>
+                        </h5>
+                    </div>
+                    
+                    <div id="collapse_last" class="collapse" aria-labelledby="headingLast" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-row">
+                                    <div class="col-10">
+                                        <input type="text" class="form-control" id="input_add_category_name" placeholder="Enter title">
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-primary" id="add_category_submit">Add</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>"""
             print(response)
             
             return HttpResponse(response)
+            ############################
+        elif "edit_category_pk" in request.POST:
+            pk = request.POST.get('edit_category_pk')
+            new_name = request.POST.get('new_name')
             
+            certain_task_category = TaskCategory.objects.get(id=pk)
+            
+            certain_task_category.name = new_name
+            certain_task_category.save()
+            
+            all_categories = TaskCategory.objects.all().order_by('name')
+            
+            response = """
+            <div class="accordion" id="accordionExample">
+            """
+            
+            for category in all_categories:
+                n = category.name
+                pk = category.id
+                
+                response += """
+                <div class="card" id="card_{}">
+                    <div class="card-header" id="heading_{}">
+                        <h4 style="text-align:center;">{}</h4>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <a class="edit_category btn btn-primary btn-sm btn-block"><img src="/static/main/img/edit.png"></a>
+                                    </div>
+                                    <div class="col">
+                                        <a class="delete_category btn btn-danger btn-sm btn-block"><img src="/static/main/img/delete.png"></a>
+                                    </div>
+                                    <input type="hidden" class="form-check-input" id="cat_{}_id" value="{}">
+                                </div>
+                            </div>
+                        
+                    </div>
+                    <div id="collapse_{}" class="collapse" aria-labelledby="heading_{}" data-parent="#accordionExample">
+                        <div class="card-body">
+                        </div>
+                    </div>
+                </div>
+                """.format(pk,pk,n,pk,pk,pk,pk)
+            response += """
+                <div class="card">
+                    <div class="card-header" id="headingLast">
+                        <h5 class="mb-0">
+                            <button class="btn btn-success btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapse_last" aria-expanded="true" aria-controls="collapse_last">
+                                Add Category
+                            </button>
+                        </h5>
+                    </div>
+                    
+                    <div id="collapse_last" class="collapse" aria-labelledby="headingLast" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-row">
+                                    <div class="col-10">
+                                        <input type="text" class="form-control" id="input_add_category_name" placeholder="Enter title">
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-primary" id="add_category_submit">Add</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>"""
+            print(response)
+            return HttpResponse(response)
+            
+            
+            #####################
+        elif "delete_category_pk" in request.POST:
+            print('deling')
+            pk = request.POST.get('delete_category_pk')
+            TaskCategory.objects.get(id=pk).delete()
+            
+            all_categories = TaskCategory.objects.all().order_by('name')
+            
+            response = """
+            <div class="accordion" id="accordionExample">
+            """
+            
+            for category in all_categories:
+                n = category.name
+                pk = category.id
+                
+                response += """
+                <div class="card" id="card_{}">
+                    <div class="card-header" id="heading_{}">
+                        <h4 style="text-align:center;">{}</h4>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <a class="edit_category btn btn-primary btn-sm btn-block"><img src="/static/main/img/edit.png"></a>
+                                    </div>
+                                    <div class="col">
+                                        <a class="delete_category btn btn-danger btn-sm btn-block"><img src="/static/main/img/delete.png"></a>
+                                    </div>
+                                    <input type="hidden" class="form-check-input" id="cat_{}_id" value="{}">
+                                </div>
+                            </div>
+                        
+                    </div>
+                    <div id="collapse_{}" class="collapse" aria-labelledby="heading_{}" data-parent="#accordionExample">
+                        <div class="card-body">
+                        </div>
+                    </div>
+                </div>
+                """.format(pk,pk,n,pk,pk,pk,pk)
+            response += """
+                <div class="card">
+                    <div class="card-header" id="headingLast">
+                        <h5 class="mb-0">
+                            <button class="btn btn-success btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapse_last" aria-expanded="true" aria-controls="collapse_last">
+                                Add Category
+                            </button>
+                        </h5>
+                    </div>
+                    
+                    <div id="collapse_last" class="collapse" aria-labelledby="headingLast" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-row">
+                                    <div class="col-10">
+                                        <input type="text" class="form-control" id="input_add_category_name" placeholder="Enter title">
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-primary" id="add_category_submit">Add</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>"""
+            print(response)
+            return HttpResponse(response)
+        elif "add_category_name" in request.POST:
+            n = request.POST.get('add_category_name')
+            
+            TaskCategory.objects.create(name=n)
+        
+            all_categories = TaskCategory.objects.all().order_by('name')
+            
+            response = """
+            <div class="accordion" id="accordionExample">
+            """
+            
+            for category in all_categories:
+                n = category.name
+                pk = category.id
+                
+                response += """
+                <div class="card" id="card_{}">
+                    <div class="card-header" id="heading_{}">
+                        <h4 style="text-align:center;">{}</h4>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <a class="edit_category btn btn-primary btn-sm btn-block"><img src="/static/main/img/edit.png"></a>
+                                    </div>
+                                    <div class="col">
+                                        <a class="delete_category btn btn-danger btn-sm btn-block"><img src="/static/main/img/delete.png"></a>
+                                    </div>
+                                    <input type="hidden" class="form-check-input" id="cat_{}_id" value="{}">
+                                </div>
+                            </div>
+                        
+                    </div>
+                    <div id="collapse_{}" class="collapse" aria-labelledby="heading_{}" data-parent="#accordionExample">
+                        <div class="card-body">
+                        </div>
+                    </div>
+                </div>
+                """.format(pk,pk,n,pk,pk,pk,pk)
+            response += """
+                <div class="card">
+                    <div class="card-header" id="headingLast">
+                        <h5 class="mb-0">
+                            <button class="btn btn-success btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapse_last" aria-expanded="true" aria-controls="collapse_last">
+                                Add Category
+                            </button>
+                        </h5>
+                    </div>
+                    
+                    <div id="collapse_last" class="collapse" aria-labelledby="headingLast" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-row">
+                                    <div class="col-10">
+                                        <input type="text" class="form-control" id="input_add_category_name" placeholder="Enter title">
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-primary" id="add_category_submit">Add</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>"""
+            print(response)
+            
+            return HttpResponse(response)
+        
+        print(request.POST)
+            
+            
+        
     elif request.method == "POST":
         routine_option = True if request.POST.get('routine_option') == "on" else False
         certain_due_date_option = True if request.POST.get('certain_due_date_option') == "on" else False
