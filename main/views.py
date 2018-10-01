@@ -586,23 +586,22 @@ def add_task_category(request):
 
 def add_task(request):
     if request.is_ajax():
-        
         if "option_list" in request.POST:
-            print('here')
             all_categories = TaskCategory.objects.all().order_by('name')
+            
             response = """
             """
-            
+        
             for category in all_categories:
                 response += """
                 <option>{}</option>""".format(category.name)
             
-
             return HttpResponse(response)
         elif "category_name" in request.POST:
             n = request.POST.get('category_name')
             new_category = TaskCategory.objects.create(
                 name = n)
+                
             return HttpResponse(new_category.name)
         elif "category_list" in request.POST:
             all_categories = TaskCategory.objects.all().order_by('name')
@@ -638,6 +637,7 @@ def add_task(request):
                     </div>
                 </div>
                 """.format(pk,pk,n,pk,pk,pk,pk)
+            
             response += """
                 <div class="card">
                     <div class="card-header" id="headingLast">
@@ -664,10 +664,8 @@ def add_task(request):
                     </div>
                 </div>
             </div>"""
-            print(response)
             
             return HttpResponse(response)
-            ############################
         elif "edit_category_pk" in request.POST:
             pk = request.POST.get('edit_category_pk')
             new_name = request.POST.get('new_name')
@@ -736,13 +734,9 @@ def add_task(request):
                     </div>
                 </div>
             </div>"""
-            print(response)
+
             return HttpResponse(response)
-            
-            
-            #####################
         elif "delete_category_pk" in request.POST:
-            print('deling')
             pk = request.POST.get('delete_category_pk')
             TaskCategory.objects.get(id=pk).delete()
             
@@ -751,7 +745,7 @@ def add_task(request):
             response = """
             <div class="accordion" id="accordionExample">
             """
-            
+        
             for category in all_categories:
                 n = category.name
                 pk = category.id
@@ -779,6 +773,7 @@ def add_task(request):
                     </div>
                 </div>
                 """.format(pk,pk,n,pk,pk,pk,pk)
+            
             response += """
                 <div class="card">
                     <div class="card-header" id="headingLast">
@@ -805,7 +800,7 @@ def add_task(request):
                     </div>
                 </div>
             </div>"""
-            print(response)
+            
             return HttpResponse(response)
         elif "add_category_name" in request.POST:
             n = request.POST.get('add_category_name')
@@ -845,6 +840,7 @@ def add_task(request):
                     </div>
                 </div>
                 """.format(pk,pk,n,pk,pk,pk,pk)
+            
             response += """
                 <div class="card">
                     <div class="card-header" id="headingLast">
@@ -871,14 +867,8 @@ def add_task(request):
                     </div>
                 </div>
             </div>"""
-            print(response)
             
             return HttpResponse(response)
-        
-        print(request.POST)
-            
-            
-        
     elif request.method == "POST":
         routine_option = True if request.POST.get('routine_option') == "on" else False
         certain_due_date_option = True if request.POST.get('certain_due_date_option') == "on" else False
