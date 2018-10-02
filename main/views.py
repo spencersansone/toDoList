@@ -345,17 +345,24 @@ def today(request):
         return render(request, 'main/today.html', x)
 
 def week_view(request):
-    array = []
-    for weekday in weekday_array:
+    weekday_array_sun = weekday_array.copy()
+    weekday_array_sun.insert(0, weekday_array_sun.pop())
+    
+    all_task_categories = TaskCategory.objects.all().order_by('name')
+    
+    l = []
+    for weekday in weekday_array_sun:
         filter_dict = {weekday: True}
         weekday_tasks = Task.objects.filter(**filter_dict)
-        print(weekday_tasks)
-        array += [[weekday.capitalize(), weekday_tasks]]
-        
-        
-        
+        organized_tasks = []
+        for task_category in all_task_categories:
+            certain_task_category_tasks = weekday_tasks.filter(
+                task_category = task_category)
+            organized_tasks += [[task_category.name,certain_task_category_tasks]]
+        l += [[weekday.capitalize(), organized_tasks]]
+
     x = {}
-    x['array'] = array
+    x['l'] = l
     return render(request, 'main/week_view.html', x)
 
 def start_new_task_entry(request, pk):
