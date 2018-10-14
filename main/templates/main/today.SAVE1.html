@@ -97,10 +97,8 @@
     </div>
     <br>
 </div>
-    <div class="col-sm-12">
-        <div class="card-columns">
     {% for b in a.1 %}
-    
+    <div class="col-sm-4">
         <div class="card" style="color:white;text-align:center;background:#212529;">
             <div class="card-body">
                 <h5 class="card-title">{{b.0.task.name}}</h5>
@@ -142,10 +140,8 @@
             </div>
         </div>
         <br>
+    </div>
     {% endfor %}
-    </div>
-    </div>
 {% endfor %}
 
 {% endblock %}
-
