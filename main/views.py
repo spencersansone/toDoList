@@ -304,7 +304,11 @@ def today(request):
                 datetime_created__year = today.year,
                 datetime_created__month = today.month,
                 datetime_created__day = today.day)
-            
+                
+            task_entry = task_entries[0]
+            steps = Step.objects.filter(task=task_entry.task)
+            step_entries = StepEntry.objects.filter(task_entry=task_entry)
+                
             if len(task_entries) == 0:
                 task_entry = TaskEntry.objects.create(
                     task = task,
@@ -318,7 +322,17 @@ def today(request):
                         step = step,
                         datetime_created = today,
                         completed = False)
-
+            elif (len(steps) != len(step_entries)):
+                # delete all step_entries for task_entry
+                step_entries.delete()
+                # create fresh step_entries from the steps
+                for step in steps:
+                    StepEntry.objects.create(
+                        task_entry = task_entry,
+                        step = step,
+                        datetime_created = today,
+                        completed = False)
+                        
         for task_category in all_task_categories:
             tasks_in_category = today_tasks.filter(
                 task_category = task_category)
